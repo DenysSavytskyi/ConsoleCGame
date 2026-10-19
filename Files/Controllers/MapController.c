@@ -52,7 +52,7 @@ bool checkInput(char *possibleInputs, int inputCount, char input) {
     return false;
 }
 
-char move() {
+char getAndCheckInput() {
     while (true) {
         clearConsole();
         printMap(getMap(), getAdventurer());
@@ -70,3 +70,5 @@ char move() {
         }
     }
 }
+
+

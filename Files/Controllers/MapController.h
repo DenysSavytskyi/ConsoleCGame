@@ -1,13 +1,13 @@
 //
 // Created by User on 13.10.2026.
 //
-#pragma once
 
-#include "../Map.h"
-#include "../Adventurer.h"
+
 #ifndef JAC_MAPCONTROLLER_H
 #define JAC_MAPCONTROLLER_H
-
+#pragma once
+#include "../Services/MapService.h"
+#include "../Modules/Adventurer.h"
 #include "MapController.h"
 
 typedef struct MapController {

@@ -4,6 +4,7 @@
 
 #ifndef JAC_PROFESSION_H
 #define JAC_PROFESSION_H
+#pragma once
 
 typedef enum Profession {
     FIGHTER,

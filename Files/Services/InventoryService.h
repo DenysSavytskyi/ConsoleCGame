@@ -2,8 +2,11 @@
 // Created by User on 17.10.2026.
 //
 
-#ifndef JAC_INVENTORY_H
-#define JAC_INVENTORY_H
+#ifndef INVENTORY_SERVICE_H
+#define INVENTORY_SERVICE_H
+#pragma once
+
+#include "../State.h"
 typedef enum PotionType {
     HEALTH,
     STRENGTH,
@@ -37,8 +40,11 @@ typedef union Item {
     QuestItem questItem;
 } Item;
 
-typedef struct Inventory {
+typedef struct InventoryService {
     Item items[10];
     int itemCount;
 } Inventory;
-#endif //JAC_INVENTORY_H
+
+State inventoryService();
+
+#endif

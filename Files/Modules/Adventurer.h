@@ -2,11 +2,12 @@
 // Created by User on 06.10.2026.
 //
 
-#include "Inventory.h"
+#include "../Services/InventoryService.h"
 #include "Profession.h"
 
 #ifndef JAC_ADVENTURER_H
 #define JAC_ADVENTURER_H
+#pragma once
 
 typedef struct Adventurer {
     char name[50];

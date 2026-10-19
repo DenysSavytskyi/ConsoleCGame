@@ -4,6 +4,7 @@
 
 #ifndef JAC_ABILITY_H
 #define JAC_ABILITY_H
+#pragma once
 
 typedef enum Ability {
     FIREBALL,

@@ -5,6 +5,7 @@
 #include "Ability.h"
 #ifndef JAC_ENEMY_H
 #define JAC_ENEMY_H
+#pragma once
 
 typedef struct Enemy {
     char name[50];
