@@ -8,7 +8,6 @@ typedef enum GAME_STATES {
     END_STATE,
     INVENTORY_STATE,
     MAP_STATE,
-    SAVE_LOAD_STATE,
     SHOP_STATE
 } State;
 

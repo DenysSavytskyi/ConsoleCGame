@@ -6,7 +6,7 @@
 #define INVENTORY_SERVICE_H
 #pragma once
 
-#include "../State.h"
+#include "../Modules/State.h"
 typedef enum PotionType {
     HEALTH,
     STRENGTH,

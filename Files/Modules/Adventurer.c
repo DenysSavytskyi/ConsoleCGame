@@ -10,6 +10,48 @@
 
 static Adventurer *adventurer = NULL;
 
+void setHpMax(int hpMax) {
+    if (adventurer != NULL) {
+        adventurer->hpMax = hpMax;
+    }
+}
+
+void setHp(int hp) {
+    if (adventurer != NULL) {
+        adventurer->hp = hp;
+    }
+}
+
+void setDamage(int damage) {
+    if (adventurer != NULL) {
+        adventurer->damage = damage;
+    }
+}
+
+void setMoney(int money) {
+    if (adventurer != NULL) {
+        adventurer->money = money;
+    }
+}
+
+void setLevel(int level) {
+    if (adventurer != NULL) {
+        adventurer->level = level;
+    }
+}
+
+void setX(int x) {
+    if (adventurer != NULL) {
+        adventurer->x = x;
+    }
+}
+
+void setY(int y) {
+    if (adventurer != NULL) {
+        adventurer->y = y;
+    }
+}
+
 Adventurer* getAdventurer() {
     return adventurer;
 }

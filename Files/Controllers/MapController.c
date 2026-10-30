@@ -3,69 +3,63 @@
 //
 
 #include "MapController.h"
+#include "../Services/Service.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
+#include "Controller.h"
 
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-void printMap(Map *map, Adventurer *adventurer) {
-    for (int i = 0; i < 20; i++) {
-        for (int j = 0; j < 20; j++) {
-            if (i == adventurer->y && j == adventurer->x) {
-                printf("A");
+void printRoom() {
+    for (int y = 0; y < getCurrentRoom()->roomSize; y++) {
+        for (int x = 0; x < getCurrentRoom()->roomSize; x++) {
+            if (y == getAdventurer()->y && x == getAdventurer()->x) {
+                putChar('A');
             } else {
-                printf("%c", map->map[i][j]);
+                putChar(getCurrentRoomCell(y,x));
             }
         }
-        printf("\n");
+        setCursor(1, getCursorY()+1);
     }
 }
 
-int checkPossibleMoves(char *possibleInputs, Adventurer *adventurer, Map *map) {
-    int count = 0;
-
-    if (adventurer->x-1 >= 0 && map->map[adventurer->y][adventurer->x-1] != '#') {
-        possibleInputs[count++] = 'a';
-    }
-    if (adventurer->y-1 >= 0 && map->map[adventurer->y-1][adventurer->x] != '#') {
-        possibleInputs[count++] = 'w';
-    }
-    if (adventurer->x+1 <= 19 && map->map[adventurer->y][adventurer->x+1] != '#') {
-        possibleInputs[count++] = 'd';
-    }
-    if (adventurer->y+1 <= 19 && map->map[adventurer->y+1][adventurer->x] != '#') {
-        possibleInputs[count++] = 's';
-    }
-    return count;
+void printMap() {
+    printRoom();
+    printMinimap();
 }
 
-bool checkInput(char *possibleInputs, int inputCount, char input) {
-    for (int i = 0; i < inputCount; i++) {
-        if (input == possibleInputs[i]) {
-            return true;
+void printMinimap() {
+    int x = getCurrentRoom()->roomSize + 2;
+    int y = 0;
+    setCursor(x, y);
+    printf("Minimap: ");
+    y++;
+    for (int i = 0; i < getMap()->roomsCount; i++) {
+        if (i % 3 == 0) {
+            y++;
+            setCursor(x, y);
         }
+        putChar(getMinimap()[i]);
     }
-    return false;
 }
 
-char getAndCheckInput() {
+char getAndCheckMapInput() {
     while (true) {
         clearConsole();
-        printMap(getMap(), getAdventurer());
-        char possibleInputs[4];
-        int inputCount = checkPossibleMoves(possibleInputs, getAdventurer(), getMap());
+        printMap();
+        // All possible moves: W, A, S, D, E(interact), I(inventory)
+        char possibleInputs[7];
+        possibleInputs[6] = '\0';
+        int inputCount = checkPossibleMovesMap(possibleInputs);
+        setCursor(0, getCurrentRoom()->roomSize + 2);
         printf("Possible moves:\n");
         for (int i = 0; i < inputCount; i++) {
-            printf("%c ", possibleInputs[i]);
+            putchar(possibleInputs[i]);
+            putchar(' ');
         }
-        printf("\n");
-        printf("Enter your move: ");
-        char input = getch();
-        if (checkInput(possibleInputs, inputCount, input)) {
+        printf("\nEnter your move: ");
+        char input = (char)getch();
+        if (checkInput(possibleInputs, input)) {
             return input;
         }
     }

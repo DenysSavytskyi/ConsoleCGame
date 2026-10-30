@@ -2,7 +2,7 @@
 #define DIALOG_SERVICE_H
 #pragma once
 #include "../Controllers/DialogController.h"
-#include "../State.h"
+#include "../Modules/State.h"
 
 State dialogService();
 

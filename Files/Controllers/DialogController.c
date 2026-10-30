@@ -1,43 +1,21 @@
+#include "DialogController.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include "Controller.h"
 
-#if defined(_WIN32)
-    #include <windows.h>
-    void sleep_ms(int milliseconds) {
-        Sleep(milliseconds);
-    }
-#else
-    #include <unistd.h>
-    void sleep_ms(int milliseconds) {
-        usleep(milliseconds * 1000);
-    }
-#endif
-
 #define FRAME_WIDTH 50
 
 int currentLine = 0;
 
-void setCursor(int x, int y) {
-    printf("\033[%d;%dH", y, x);
-    fflush(stdout);
-}
-
-void clearLine() {
-    printf("\033[2K");
-    fflush(stdout);
-}
-
-void printTyped(const char *text, int delay_ms, int lineOfText, int startX) {
+void printTyped(const char *text, int lineOfText, int startX) {
     for (int i = 0; text[i] != '\0'; i++) {
         if (text[i] == '\n') {
             lineOfText++;
             setCursor(startX, lineOfText);
         } else {
-            putchar(text[i]);
-            fflush(stdout);
-            sleep_ms(delay_ms);
+            putDelayedChar(text[i], CHARS_DELAY_MS);
         }
     }
 }
@@ -96,21 +74,21 @@ void drawEmptyRightFrame(int numberOfLines) {
 void printLeft(const char *text, int numberOfLines) {
     drawEmptyLeftFrame(numberOfLines);
     setCursor(5, currentLine - numberOfLines - 1);
-    printTyped(text, 50, currentLine - numberOfLines - 1, 5);
-    sleep_ms(500);
+    printTyped(text, currentLine - numberOfLines - 1, 5);
+    sleep_ms(PHRASES_DELAY_MS);
 }
 
 void printRight(const char *text, int numberOfLines) {
     drawEmptyRightFrame(numberOfLines);
     setCursor(15, currentLine - numberOfLines - 1);
-    printTyped(text, 50, currentLine - numberOfLines - 1, 15);
-    sleep_ms(500);
+    printTyped(text, currentLine - numberOfLines - 1, 15);
+    sleep_ms(PHRASES_DELAY_MS);
 }
 
 void printRightInput(const char *text, char *buffer, int buffer_size, int numberOfLines) {
     drawEmptyRightFrame(numberOfLines + 1);
     setCursor(15, currentLine - numberOfLines - 2);
-    printTyped(text, 50, currentLine - numberOfLines - 2, 15);
+    printTyped(text, currentLine - numberOfLines - 2, 15);
 
     setCursor(15, currentLine - numberOfLines - 1);
     printf("> ");

@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Game
         Game.c
-        Files/State.h
+        Files/Modules/Profession.h
+        Files/Modules/State.h
         Files/Modules/Ability.c
         Files/Modules/Ability.h
         Files/Modules/Adventurer.c
@@ -23,8 +24,6 @@ add_executable(Game
         Files/Services/EndService.h
         Files/Services/InventoryService.c
         Files/Services/InventoryService.h
-        Files/Services/SaveLoadService.c
-        Files/Services/SaveLoadService.h
         Files/Services/ShopService.c
         Files/Services/ShopService.h
         Files/Controllers/BattleController.c
@@ -37,11 +36,10 @@ add_executable(Game
         Files/Controllers/InventoryController.h
         Files/Controllers/MapController.c
         Files/Controllers/MapController.h
-        Files/Controllers/SaveLoadController.c
-        Files/Controllers/SaveLoadController.h
         Files/Controllers/ShopController.c
         Files/Controllers/ShopController.h
         Files/Controllers/Controller.c
         Files/Controllers/Controller.h
-        Files/Modules/Profession.h
+        Files/Services/Service.c
+        Files/Services/Service.h
 )

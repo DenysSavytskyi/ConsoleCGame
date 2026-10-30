@@ -23,6 +23,13 @@ typedef struct Adventurer {
     int y;
 } Adventurer;
 
+void setHpMax(int hpMax);
+void setHp(int hp);
+void setDamage(int damage);
+void setMoney(int money);
+void setLevel(int level);
+void setX(int x);
+void setY(int y);
 Adventurer* newAdventurer(char *name, Profession profession, int hpMax, int damage, int money, int xp, int x, int y);
 Adventurer* getAdventurer();
 void printStats(Adventurer *adventurer);
