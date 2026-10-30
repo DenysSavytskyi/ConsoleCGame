@@ -116,9 +116,8 @@ void printRightInput(const char *text, char *buffer, int buffer_size, int number
     printf("> ");
     fflush(stdout);
 
-    if (fgets(buffer, buffer_size, stdin) != NULL) {
+    if (fgets(buffer, buffer_size, stdin) != NULL)
         buffer[strcspn(buffer, "\n")] = 0;
-    }
 }
 
 void resetDialog() {

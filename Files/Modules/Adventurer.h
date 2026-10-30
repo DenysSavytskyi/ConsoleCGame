@@ -4,6 +4,7 @@
 
 #include "../Services/InventoryService.h"
 #include "Profession.h"
+#include "Quest.h"
 
 #ifndef JAC_ADVENTURER_H
 #define JAC_ADVENTURER_H
@@ -21,11 +22,14 @@ typedef struct Adventurer {
     int xp;
     int x;
     int y;
+    Quest quests[QUEST_COUNT];
 } Adventurer;
 
 Adventurer* newAdventurer(char *name, Profession profession, int hpMax, int damage, int money, int xp, int x, int y);
 Adventurer* getAdventurer();
 void printStats(Adventurer *adventurer);
 Adventurer* createAdventurer();
+void resetAdventurer();
+void addExperience(Adventurer *adventurer, int amount);
 
 #endif //JAC_ADVENTURER_H

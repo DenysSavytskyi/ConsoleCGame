@@ -5,16 +5,13 @@
 #include "MapController.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <conio.h>
-
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include "../Services/MapService.h"
+#include "../Modules/Adventurer.h"
+#include "Controller.h"
 
 void printMap(Map *map, Adventurer *adventurer) {
-    for (int i = 0; i < 20; i++) {
-        for (int j = 0; j < 20; j++) {
+    for (int i = 0; i < MAP_HEIGHT; i++) {
+        for (int j = 0; j < MAP_WIDTH; j++) {
             if (i == adventurer->y && j == adventurer->x) {
                 printf("A");
             } else {
@@ -28,16 +25,16 @@ void printMap(Map *map, Adventurer *adventurer) {
 int checkPossibleMoves(char *possibleInputs, Adventurer *adventurer, Map *map) {
     int count = 0;
 
-    if (adventurer->x-1 >= 0 && map->map[adventurer->y][adventurer->x-1] != '#') {
+    if (adventurer->x-1 >= 0 && map->map[adventurer->y][adventurer->x-1] != Wall) {
         possibleInputs[count++] = 'a';
     }
-    if (adventurer->y-1 >= 0 && map->map[adventurer->y-1][adventurer->x] != '#') {
+    if (adventurer->y-1 >= 0 && map->map[adventurer->y-1][adventurer->x] != Wall) {
         possibleInputs[count++] = 'w';
     }
-    if (adventurer->x+1 <= 19 && map->map[adventurer->y][adventurer->x+1] != '#') {
+    if (adventurer->x+1 < MAP_WIDTH && map->map[adventurer->y][adventurer->x+1] != Wall) {
         possibleInputs[count++] = 'd';
     }
-    if (adventurer->y+1 <= 19 && map->map[adventurer->y+1][adventurer->x] != '#') {
+    if (adventurer->y+1 < MAP_HEIGHT && map->map[adventurer->y+1][adventurer->x] != Wall) {
         possibleInputs[count++] = 's';
     }
     return count;
@@ -64,11 +61,10 @@ char getAndCheckInput() {
         }
         printf("\n");
         printf("Enter your move: ");
-        char input = getch();
+        char input = readCommand("Move (WASD): ", "wasd");
         if (checkInput(possibleInputs, inputCount, input)) {
             return input;
         }
     }
 }
-
 

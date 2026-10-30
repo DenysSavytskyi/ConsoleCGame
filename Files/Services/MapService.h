@@ -12,16 +12,20 @@ typedef enum Cell {
     Wall = '#',
     Stuff = 'I',
     Treasure = '$',
-    Enemy = 'E',
+    EnemyCell = 'E',
     Door = 'D',
     Player = 'A',
     NPC = 'N',
     Shop = 'S',
-    Portal = 'P'
+    Portal = 'P',
+    QuestBoard = '?'
 } Cell;
 
+#define MAP_HEIGHT 12
+#define MAP_WIDTH 24
+
 typedef struct Map {
-    Cell map[20][20];
+    Cell map[MAP_HEIGHT][MAP_WIDTH];
 } Map;
 
 State mapService();

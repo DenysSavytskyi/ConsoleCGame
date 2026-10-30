@@ -13,6 +13,13 @@ typedef enum PotionType {
     EXPERIENCE,
 } PotionType;
 
+typedef enum ItemType {
+    POTION_ITEM,
+    WEAPON_ITEM,
+    ARMOR_ITEM,
+    QUEST_ITEM
+} ItemType;
+
 typedef struct Potion {
     char name[50];
     PotionType type;
@@ -42,9 +49,16 @@ typedef union Item {
 
 typedef struct InventoryService {
     Item items[10];
+    ItemType types[10];
     int itemCount;
 } Inventory;
 
 State inventoryService();
+Inventory *createInventory();
+void addPotion(Inventory *inventory, const char *name, PotionType type, int amount);
+void addWeapon(Inventory *inventory, const char *name, int damage);
+void addArmor(Inventory *inventory, const char *name, int defense);
+int useHealthPotion(Inventory *inventory, int *hp, int hpMax);
+void printInventory(const Inventory *inventory);
 
 #endif

@@ -12,10 +12,11 @@
 #include "Files/Services/MapService.h"
 #include "Files/Services/SaveLoadService.h"
 #include "Files/Services/ShopService.h"
+#include "Files/Services/QuestService.h"
 
 int main() {
     State currentState = DIALOG_STATE;
-    while (currentState != END_STATE) {
+    while (1) {
         switch (currentState) {
             case BATTLE_STATE:
                 currentState = battleService();
@@ -29,6 +30,9 @@ int main() {
             case MAP_STATE:
                 currentState = mapService();
                 break;
+            case QUEST_STATE:
+                currentState = questService();
+                break;
             case SAVE_LOAD_STATE:
                 currentState = saveLoadService();
                 break;
@@ -37,10 +41,12 @@ int main() {
                 break;
             default:
                 printf("Unknown error occurred. Exiting the game.\n");
-                currentState = END_STATE;
+                return 1;
+        }
+        if (currentState == END_STATE) {
+            currentState = endService();
+            if (currentState == END_STATE) break;
         }
     }
-    endService();
-    getchar();
     return 0;
 }

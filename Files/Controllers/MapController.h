@@ -8,7 +8,7 @@
 #pragma once
 #include "../Services/MapService.h"
 #include "../Modules/Adventurer.h"
-#include "MapController.h"
+#include <stdbool.h>
 
 typedef struct MapController {
     Map *map;
@@ -18,6 +18,6 @@ void clearConsole();
 void printMap(Map *map, Adventurer *adventurer);
 int checkPossibleMoves(char *possibleInputs, Adventurer *adventurer, Map *map);
 bool checkInput(char *possibleInputs, int inputCount, char input);
-char move();
+char getAndCheckInput();
 
 #endif //JAC_MAPCONTROLLER_H

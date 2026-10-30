@@ -13,6 +13,8 @@ add_executable(Game
         Files/Modules/Profession.h
         Files/Modules/Enemy.c
         Files/Modules/Enemy.h
+        Files/Modules/Quest.c
+        Files/Modules/Quest.h
         Files/Services/MapService.c
         Files/Services/MapService.h
         Files/Services/BattleService.c
@@ -27,6 +29,8 @@ add_executable(Game
         Files/Services/SaveLoadService.h
         Files/Services/ShopService.c
         Files/Services/ShopService.h
+        Files/Services/QuestService.c
+        Files/Services/QuestService.h
         Files/Controllers/BattleController.c
         Files/Controllers/BattleController.h
         Files/Controllers/DialogController.c
