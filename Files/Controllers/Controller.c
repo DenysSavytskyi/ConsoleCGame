@@ -4,8 +4,7 @@
 
 #include "Controller.h"
 #include <stdlib.h>
-#include <stdio.h>
-#include <ncurses/ncurses.h>
+#include <ncurses.h>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -17,17 +16,28 @@ static int cursorX = 1;
 static int cursorY = 1;
 static int maxCursorY = 1;
 
+void initializeController() {
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+    start_color();
+    use_default_colors();
+    init_pair(1, COLOR_RED, -1);
+    init_pair(2, COLOR_GREEN, -1);
+    init_pair(3, COLOR_BLUE, -1);
+    init_pair(4, COLOR_YELLOW, -1);
+    init_pair(5, COLOR_CYAN, -1);
+    keypad(stdscr, FALSE);
+}
+
 void clearConsole() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
+    erase();
     cursorX = 1;
     cursorY = 1;
     maxCursorY = 1;
     setCursor(cursorX, cursorY);
-    fflush(stdout);
+    refresh();
 }
 
 void sleep_ms(int milliseconds) {
@@ -39,17 +49,15 @@ void sleep_ms(int milliseconds) {
 }
 
 void setCursor(int x, int y) {
-    printf("\033[%d;%dH", y, x);
+    move(y - 1, x - 1);
     cursorX = x;
     cursorY = y;
     if (cursorY > maxCursorY) maxCursorY = cursorY;
-    fflush(stdout);
 }
 
 void clearLine() {
-    printf("\033[2K");
+    clrtoeol();
     cursorX = 1;
-    fflush(stdout);
 }
 
 int getCursorX() {
@@ -73,10 +81,10 @@ void resetAllControllers() {
 
 void putDelayedCharAt(char c, int x, int y, int charDelay) {
     setCursor(x, y);
-    putchar(c);
+    addch((unsigned char)c);
     cursorX++;
     sleep_ms(charDelay);
-    fflush(stdout);
+    refresh();
 }
 
 void putCharAt(char c, int x, int y) {
@@ -89,4 +97,8 @@ void putChar(char c) {
 
 void putDelayedChar(char c, int charDelay) {
     putDelayedCharAt(c, cursorX, cursorY, charDelay);
+}
+
+void waitForInput() {
+    getch();
 }

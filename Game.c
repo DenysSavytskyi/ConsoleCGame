@@ -5,7 +5,6 @@
 #include <ncurses.h>
 #include <time.h>
 #include "stdlib.h"
-#include "stdio.h"
 #include "Files/Controllers/Controller.h"
 #include "Files/Modules/State.h"
 #include "Files/Controllers/DialogController.h"
@@ -17,8 +16,7 @@
 #include "Files/Services/ShopService.h"
 
 int main() {
-    initscr();
-    cbreak();
+    initializeController();
     srand(time(0));
     State currentState = DIALOG_STATE;
     while (currentState != END_STATE) {
@@ -40,11 +38,12 @@ int main() {
                 currentState = shopService();
                 break;
             default:
-                printf("\nUnknown error occurred. Exiting the game.\n");
+                printw("Unknown error occurred. Exiting the game.\n");
+                refresh();
                 currentState = END_STATE;
         }
     }
     endService();
-    getchar();
+    endwin();
     return 0;
 }

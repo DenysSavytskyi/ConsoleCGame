@@ -4,25 +4,69 @@
 
 #include "MapController.h"
 #include "../Services/Service.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <conio.h>
 #include <ncurses.h>
 
 #include "Controller.h"
 
+static int colorForCell(Cell cell) {
+    switch (cell) {
+        case Enemy:
+            return 1;
+        case NPC:
+        case Shop:
+        case Player:
+            return 2;
+        case Portal:
+            return 3;
+        case Stuff:
+        case Treasure:
+            return 4;
+        default:
+            return 0;
+    }
+}
+
+static int colorForRoom(RoomType roomType) {
+    switch (roomType) {
+        case EnemyRoom:
+        case BossRoom:
+            return 1;
+        case NPCRoom:
+        case ShopRoom:
+        case StartRoom:
+            return 2;
+        case TreasureRoom:
+            return 4;
+        default:
+            return 0;
+    }
+}
 
 void printRoom() {
-    for (int y = 0; y < getCurrentRoom()->roomSize; y++) {
-        for (int x = 0; x < getCurrentRoom()->roomSize; x++) {
-            if (y == getAdventurer()->y && x == getAdventurer()->x) {
-                putChar('A');
-            } else {
-                putChar(getCurrentRoomCell(y,x));
-            }
-        }
-        setCursor(1, getCursorY()+1);
+    int terminalRows, terminalCols;
+    int roomSize = getCurrentRoom()->roomSize;
+    getmaxyx(stdscr, terminalRows, terminalCols);
+    if (terminalRows < roomSize + 4 || terminalCols < roomSize + 16) {
+        mvprintw(0, 0, "Terminal too small. Please enlarge it.");
+        refresh();
+        return;
     }
+
+    WINDOW *roomWindow = newwin(roomSize, roomSize, 0, 0);
+    for (int y = 0; y < roomSize; y++) {
+        for (int x = 0; x < roomSize; x++) {
+            Cell cell = getCurrentRoomCell(y, x);
+            if (y == getAdventurer()->y && x == getAdventurer()->x) {
+                cell = Player;
+            }
+            int color = colorForCell(cell);
+            if (color) wattron(roomWindow, COLOR_PAIR(color));
+            mvwaddch(roomWindow, y, x, (unsigned char)cell);
+            if (color) wattroff(roomWindow, COLOR_PAIR(color));
+        }
+    }
+    wrefresh(roomWindow);
+    delwin(roomWindow);
 }
 
 void printMap() {
@@ -31,35 +75,55 @@ void printMap() {
 }
 
 void printMinimap() {
-    int x = getCurrentRoom()->roomSize + 2;
-    int y = 0;
-    setCursor(x, y);
-    printf("Minimap: ");
-    y++;
-    for (int i = 0; i < getMap()->roomsCount; i++) {
-        if (i % 3 == 0) {
-            y++;
-            setCursor(x, y);
-        }
-        putChar(getMinimap()[i]);
+    int roomSize = getCurrentRoom()->roomSize;
+    int startX = roomSize + 4;
+    int terminalRows, terminalCols;
+    getmaxyx(stdscr, terminalRows, terminalCols);
+    if (terminalRows < 9 || terminalCols < startX + 12) {
+        mvprintw(0, 0, "Terminal too small. Please enlarge it.");
+        refresh();
+        return;
     }
+    WINDOW *minimapWindow = newwin(9, 12, 0, startX);
+    box(minimapWindow, 0, 0);
+    mvwprintw(minimapWindow, 0, 2, "Minimap");
+
+    for (int i = 0; i < getMap()->roomsCount; i++) {
+        int row = i / 3;
+        int col = i % 3;
+        int color = colorForRoom(getMinimap()[i]);
+        if (color) wattron(minimapWindow, COLOR_PAIR(color));
+        mvwaddch(minimapWindow, row * 2 + 1, col * 2 + 1, getMinimap()[i]);
+        if (color) wattroff(minimapWindow, COLOR_PAIR(color));
+
+        if (col < 2 && areRoomsConnected(i, i + 1)) {
+            mvwaddch(minimapWindow, row * 2 + 1, col * 2 + 2, ACS_HLINE);
+        }
+        if (row < 2 && i + 3 < getMap()->roomsCount &&
+            areRoomsConnected(i, i + 3)) {
+            mvwaddch(minimapWindow, row * 2 + 2, col * 2 + 1, ACS_VLINE);
+        }
+    }
+    wrefresh(minimapWindow);
+    delwin(minimapWindow);
 }
 
 char getAndCheckMapInput() {
     while (1) {
         clearConsole();
         printMap();
-        // All possible moves: W, A, S, D, E(interact), I(inventory)
+
         char possibleInputs[7];
         possibleInputs[6] = '\0';
         int inputCount = checkPossibleMovesMap(possibleInputs);
-        setCursor(0, getCurrentRoom()->roomSize + 2);
-        printf("Possible moves:\n");
+        int statusY = getCurrentRoom()->roomSize + 3;
+        mvprintw(statusY, 0, "Possible moves:");
         for (int i = 0; i < inputCount; i++) {
-            putchar(possibleInputs[i]);
-            putchar(' ');
+            printw(" %c", possibleInputs[i]);
         }
-        printf("\nEnter your move: ");
+        printw("\nEnter your move: ");
+        refresh();
+
         char input = (char)getch();
         while (input == ERR) {
             input = (char)getch();
@@ -69,5 +133,3 @@ char getAndCheckMapInput() {
         }
     }
 }
-
-

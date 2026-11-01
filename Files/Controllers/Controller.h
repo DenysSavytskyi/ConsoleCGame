@@ -18,6 +18,8 @@ void putDelayedCharAt(char c, int x, int y, int charDelay);
 void putCharAt(char c, int x, int y);
 void putChar(char c);
 void putDelayedChar(char c, int charDelay);
+void initializeController();
+void waitForInput();
 
 
 #endif //GAME_CONTROLLER_H

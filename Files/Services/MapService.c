@@ -3,7 +3,6 @@
 //
 
 #include "MapService.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 static int level = 0;
@@ -14,6 +13,7 @@ void initMap() {
     map->roomsCount = getRandom(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT);
     map->currentRoom = 0;
     map->rooms = malloc(map->roomsCount * sizeof(Room));
+    map->connections = calloc((size_t)map->roomsCount * map->roomsCount, sizeof(bool));
     initRooms(map->roomsCount);
 }
 
@@ -115,6 +115,10 @@ void generateMap(int roomIndex, RoomType roomType, int roomSize) {
     setRoomCell(roomIndex, getRandom(2, roomSize-2), getRandom(2, roomSize-2), element);
 }
 void setDoors(int firstRoom, int secondRoom) {
+    if (firstRoom < 0 || secondRoom < 0 ||
+        firstRoom >= map->roomsCount || secondRoom >= map->roomsCount) {
+        return;
+    }
     int firstRoomSize = map->rooms[firstRoom].roomSize;
     int secondRoomSize = map->rooms[secondRoom].roomSize;
     if (firstRoom + 1 == secondRoom) {
@@ -129,7 +133,11 @@ void setDoors(int firstRoom, int secondRoom) {
     } else if (firstRoom - 3 == secondRoom) {
         setRoomCell(firstRoom, 1, firstRoomSize / 2, Door);
         setRoomCell(secondRoom, secondRoomSize-2, secondRoomSize / 2, Door);
+    } else {
+        return;
     }
+    map->connections[firstRoom * map->roomsCount + secondRoom] = true;
+    map->connections[secondRoom * map->roomsCount + firstRoom] = true;
 }
 void connectRooms(int roomsCount) {
     RoomType *graph = malloc(roomsCount * sizeof(RoomType));
@@ -140,7 +148,8 @@ void connectRooms(int roomsCount) {
     }
     isVisited[1] = true;
     setDoors(0, 1);
-    setDoors(roomsCount-1, roomsCount-2);
+    int bossRoom = roomsCount - 1;
+    setDoors(bossRoom, bossRoom % 3 == 0 ? bossRoom - 3 : bossRoom - 1);
     for (int i = 2; i < roomsCount-1; i++) {
         int randomIndex;
         while (true) {
@@ -200,6 +209,14 @@ Room* getRoom(int roomIndex) {
 
 Room* getCurrentRoom() {
     return getRoom(map->currentRoom);
+}
+
+bool areRoomsConnected(int firstRoom, int secondRoom) {
+    if (!map || firstRoom < 0 || secondRoom < 0 ||
+        firstRoom >= map->roomsCount || secondRoom >= map->roomsCount) {
+        return false;
+    }
+    return map->connections[firstRoom * map->roomsCount + secondRoom];
 }
 
 Map* getMap() {

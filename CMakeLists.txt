@@ -51,4 +51,4 @@ add_executable(Game
         Files/Services/Service.h
 )
 
-target_link_libraries(Game ncurses)
+target_link_libraries(Game ncursesw)

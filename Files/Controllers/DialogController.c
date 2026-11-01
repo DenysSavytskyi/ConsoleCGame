@@ -1,10 +1,9 @@
 #include "DialogController.h"
 
-#include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
+#include <ncurses.h>
 #include "Controller.h"
-
-#define FRAME_WIDTH 50
 
 int currentLine = 0;
 
@@ -14,91 +13,104 @@ void printTyped(const char *text, int lineOfText, int startX) {
             lineOfText++;
             setCursor(startX, lineOfText);
         } else {
-            putDelayedChar(text[i], CHARS_DELAY_MS);
+            addch((unsigned char)text[i]);
+            refresh();
+            sleep_ms(CHARS_DELAY_MS);
         }
     }
+}
+
+static int getFrameWidth(int terminalWidth) {
+    int width = terminalWidth / 2 - 2;
+    if (width > 50) width = 50;
+    if (width < 12) width = 12;
+    return width;
+}
+
+static WINDOW *createFrame(bool left, int numberOfLines, int *textY, int *textX) {
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+    int width = getFrameWidth(cols);
+    int height = numberOfLines + 2;
+    int x = left ? 1 : cols - width - 2;
+
+    if (cols < width * 2 + 3 || height + 2 >= rows) {
+        erase();
+        mvprintw(0, 0, "Terminal too small. Please enlarge it.");
+        refresh();
+        waitForInput();
+        currentLine = 0;
+        erase();
+    } else if (currentLine + height + 1 >= rows) {
+        erase();
+        currentLine = 0;
+    }
+
+    WINDOW *frame = newwin(height, width, currentLine, x);
+    box(frame, 0, 0);
+    if (left) {
+        mvwaddch(frame, 1, 0, ACS_RTEE);
+        mvwaddch(frame, 1, 1, ACS_HLINE);
+    } else {
+        mvwaddch(frame, 1, width - 1, ACS_LTEE);
+        mvaddch(currentLine + 1, x + width, ACS_HLINE);
+    }
+    wrefresh(frame);
+    *textY = currentLine + 1;
+    *textX = x + 2;
+    currentLine += height + 1;
+    return frame;
 }
 
 void drawEmptyLeftFrame(int numberOfLines) {
-    currentLine++;
-    setCursor(0, currentLine);
-    printf("  %c", 218);
-    for (int i = 0; i < FRAME_WIDTH - 2; i++) printf("%c", 196);
-    printf("%c\n", 191);
-    currentLine++;
-
-    for (int i = 0; i < numberOfLines; i++) {
-        if (i==0) {
-            printf("%c%c%c", 196,196, 180);
-        } else {
-            printf("  %c", 179);
-        }
-        for (int j = 0; j < FRAME_WIDTH - 2; j++) printf(" ");
-        printf("%c\n", 179);
-        currentLine++;
-    }
-
-    printf("  %c", 192);
-    for (int i = 0; i < FRAME_WIDTH - 2; i++) printf("%c", 196);
-    printf("%c\n", 217);
-    currentLine++;
-    fflush(stdout);
+    int textY, textX;
+    WINDOW *frame = createFrame(true, numberOfLines, &textY, &textX);
+    delwin(frame);
 }
 
 void drawEmptyRightFrame(int numberOfLines) {
-    currentLine++;
-    setCursor(0, currentLine);
-    printf("          %c", 218);
-    for (int i = 0; i < FRAME_WIDTH - 2; i++) printf("%c", 196);
-    printf("%c\n", 191);
-    currentLine++;
-
-    for (int i = 0; i < numberOfLines; i++) {
-        printf("          %c", 179);
-        for (int j = 0; j < FRAME_WIDTH - 2; j++) printf(" ");
-        if (i==0)
-            printf("%c%c%c\n", 195, 196, 196);
-        else
-            printf("%c\n", 179);
-        currentLine++;
-    }
-
-    printf("          %c", 192);
-    for (int i = 0; i < FRAME_WIDTH - 2; i++) printf("%c", 196);
-    printf("%c\n", 217);
-    currentLine++;
-    fflush(stdout);
+    int textY, textX;
+    WINDOW *frame = createFrame(false, numberOfLines, &textY, &textX);
+    delwin(frame);
 }
 
 void printLeft(const char *text, int numberOfLines) {
-    drawEmptyLeftFrame(numberOfLines);
-    setCursor(5, currentLine - numberOfLines - 1);
-    printTyped(text, currentLine - numberOfLines - 1, 5);
+    int textY, textX;
+    WINDOW *frame = createFrame(true, numberOfLines, &textY, &textX);
+    setCursor(textX, textY + 1);
+    printTyped(text, textY + 1, textX);
+    delwin(frame);
     sleep_ms(PHRASES_DELAY_MS);
 }
 
 void printRight(const char *text, int numberOfLines) {
-    drawEmptyRightFrame(numberOfLines);
-    setCursor(15, currentLine - numberOfLines - 1);
-    printTyped(text, currentLine - numberOfLines - 1, 15);
+    int textY, textX;
+    WINDOW *frame = createFrame(false, numberOfLines, &textY, &textX);
+    setCursor(textX, textY + 1);
+    printTyped(text, textY + 1, textX);
+    delwin(frame);
     sleep_ms(PHRASES_DELAY_MS);
 }
 
 void printRightInput(const char *text, char *buffer, int buffer_size, int numberOfLines) {
-    drawEmptyRightFrame(numberOfLines + 1);
-    setCursor(15, currentLine - numberOfLines - 2);
-    printTyped(text, currentLine - numberOfLines - 2, 15);
-
-    setCursor(15, currentLine - numberOfLines - 1);
-    printf("> ");
-    fflush(stdout);
-
-    if (fgets(buffer, buffer_size, stdin) != NULL) {
-        buffer[strcspn(buffer, "\n")] = 0;
-    }
+    int textY, textX;
+    WINDOW *frame = createFrame(false, numberOfLines + 1, &textY, &textX);
+    setCursor(textX, textY + 1);
+    printTyped(text, textY + 1, textX);
+    setCursor(textX, textY + 2);
+    addstr("> ");
+    refresh();
+    echo();
+    curs_set(1);
+    getnstr(buffer, buffer_size - 1);
+    noecho();
+    curs_set(0);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    delwin(frame);
 }
 
 void resetDialog() {
-    clearConsole();
+    erase();
+    refresh();
     currentLine = 0;
 }
