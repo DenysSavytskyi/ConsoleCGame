@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include "Controller.h"
 
 #define FRAME_WIDTH 50

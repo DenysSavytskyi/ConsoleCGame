@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
+#include <ncurses.h>
+
 #include "Controller.h"
 
 
@@ -44,7 +46,7 @@ void printMinimap() {
 }
 
 char getAndCheckMapInput() {
-    while (true) {
+    while (1) {
         clearConsole();
         printMap();
         // All possible moves: W, A, S, D, E(interact), I(inventory)
@@ -59,6 +61,9 @@ char getAndCheckMapInput() {
         }
         printf("\nEnter your move: ");
         char input = (char)getch();
+        while (input == ERR) {
+            input = (char)getch();
+        }
         if (checkInput(possibleInputs, input)) {
             return input;
         }

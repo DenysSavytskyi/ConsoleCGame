@@ -2,6 +2,7 @@
 // Created by User on 13.10.2026.
 //
 
+#include <ncurses.h>
 #include <time.h>
 #include "stdlib.h"
 #include "stdio.h"
@@ -16,6 +17,8 @@
 #include "Files/Services/ShopService.h"
 
 int main() {
+    initscr();
+    cbreak();
     srand(time(0));
     State currentState = DIALOG_STATE;
     while (currentState != END_STATE) {

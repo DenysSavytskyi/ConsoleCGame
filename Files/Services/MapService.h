@@ -5,6 +5,7 @@
 #ifndef JAC_MAP_H
 #define JAC_MAP_H
 #pragma once
+#include <stdbool.h>
 #include "Service.h"
 #include "../Modules/State.h"
 #include "../Modules/Adventurer.h"
@@ -68,7 +69,7 @@ Cell** getCurrentRoomMap();
 void generateMap(int RoomIndex, RoomType type, int roomSize);
 Room* getRoom(int roomIndex);
 Room* getCurrentRoom();
-State move();
+State mapMove();
 int checkPossibleMovesMap(char *possibleInputs);
 void completeMap();
 

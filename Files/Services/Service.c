@@ -5,7 +5,7 @@
 #include "Service.h"
 
 bool checkInput(const char *possibleInputs, char input) {
-    if (possibleInputs == nullptr)
+    if (possibleInputs == NULL)
         return false;
     for (int i = 0; possibleInputs[i] != '\0'; i++) {
         if (input == possibleInputs[i]) {

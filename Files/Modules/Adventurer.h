@@ -4,6 +4,7 @@
 
 #include "../Services/InventoryService.h"
 #include "Profession.h"
+#include <stdbool.h>
 
 #ifndef JAC_ADVENTURER_H
 #define JAC_ADVENTURER_H

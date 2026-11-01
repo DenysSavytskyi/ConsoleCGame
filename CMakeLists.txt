@@ -1,7 +1,15 @@
-cmake_minimum_required(VERSION 4.3)
-project(Game)
+cmake_minimum_required(VERSION 3.26)
 
-set(CMAKE_CXX_STANDARD 20)
+# Примусово вказуємо компілятор MSYS2 UCRT64
+set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
+
+project(Game C)
+
+set(CMAKE_C_STANDARD 11)
+
+include_directories("C:/msys64/ucrt64/include")
+include_directories("C:/msys64/ucrt64/include/ncurses")
+link_directories("C:/msys64/ucrt64/lib")
 
 add_executable(Game
         Game.c
@@ -11,7 +19,6 @@ add_executable(Game
         Files/Modules/Ability.h
         Files/Modules/Adventurer.c
         Files/Modules/Adventurer.h
-        Files/Modules/Profession.h
         Files/Modules/Enemy.c
         Files/Modules/Enemy.h
         Files/Services/MapService.c
@@ -43,3 +50,5 @@ add_executable(Game
         Files/Services/Service.c
         Files/Services/Service.h
 )
+
+target_link_libraries(Game ncurses)

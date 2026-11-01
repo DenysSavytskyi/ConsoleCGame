@@ -7,8 +7,8 @@
 #include <stdlib.h>
 
 static int level = 0;
-static Map *map = nullptr;
-static RoomType *minimap = nullptr;
+static Map *map = NULL;
+static RoomType *minimap = NULL;
 void initMap() {
     map = malloc(sizeof(Map));
     map->roomsCount = getRandom(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT);
@@ -193,7 +193,7 @@ void nextRoom() {
 
 Room* getRoom(int roomIndex) {
     if (roomIndex < 0 || roomIndex >= map->roomsCount) {
-        return nullptr;
+        return NULL;
     }
     return &map->rooms[roomIndex];
 }
@@ -212,8 +212,8 @@ RoomType* getMinimap() {
 
 Cell** getRoomMap(int roomIndex) {
     Room *room = getRoom(roomIndex);
-    if (room == nullptr) {
-        return nullptr;
+    if (room == NULL) {
+        return NULL;
     }
     return room->roomMap;
 }
@@ -228,12 +228,12 @@ State mapService() {
         completeMap();
     }
     while (state == MAP_STATE) {
-        state = move();
+        state = mapMove();
     }
     return state;
 }
 
-State move() {
+State mapMove() {
     char input = getAndCheckMapInput();
     if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Enemy)
         return BATTLE_STATE;
@@ -296,7 +296,7 @@ int checkPossibleMovesMap(char *possibleInputs) {
 }
 
 void completeMap() {
-    map = nullptr;
+    map = NULL;
     level++;
     initMap();
 }

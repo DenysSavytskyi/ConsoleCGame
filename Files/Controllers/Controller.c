@@ -5,6 +5,7 @@
 #include "Controller.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <ncurses/ncurses.h>
 
 #ifdef _WIN32
     #include <windows.h>
