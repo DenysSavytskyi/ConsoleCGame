@@ -1,9 +1,9 @@
 //
 // Created by User on 06.10.2026.
 //
-#include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include "ncurses.h"
 #include "Adventurer.h"
 #include "Profession.h"
 #include "../Controllers/DialogController.h"
@@ -85,18 +85,18 @@ Adventurer* createAdventurer() {
     printRightInput("I... My name is... ", name, sizeof(name), 1);
     while (true){
         printLeft("And what's your profession?\n1. Fighter\n2. Mage\n3. Thief\n4. Bard\n5. Cleric\n", 6);
-        int professionChoice;
-        printRightInput("I'm a... ", (char*)&professionChoice, sizeof(professionChoice), 1);
-        switch (professionChoice) {
-            case 49:
+        char professionChoice[4];
+        printRightInput("I'm a... ", professionChoice, sizeof(professionChoice), 1);
+        switch (professionChoice[0]) {
+            case '1':
                 return newAdventurer(name, FIGHTER, 10, 10, 0, 0, 0, 0);
-            case 50:
+            case '2':
                 return newAdventurer(name, MAGE, 70, 7, 0, 50, 0, 0);
-            case 51:
+            case '3':
                 return newAdventurer(name, THIEF, 80, 8, 100, 0, 0, 0);
-            case 52:
+            case '4':
                 return newAdventurer(name, BARD, 90, 6, 0, 0, 0, 0);
-            case 53:
+            case '5':
                 return newAdventurer(name, CLERIC, 110, 9, 0, 0, 0, 0);
             default:
                 printLeft("It seems like there is no such profession.", 1);

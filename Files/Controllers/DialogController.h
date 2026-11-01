@@ -1,7 +1,6 @@
 #ifndef DIALOG_CONTROLLER_H
 #define DIALOG_CONTROLLER_H
 #pragma once
-#include <stdio.h>
 #define PHRASES_DELAY_MS 5
 #define CHARS_DELAY_MS 1
 

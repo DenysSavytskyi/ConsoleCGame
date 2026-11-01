@@ -49,6 +49,7 @@ typedef struct Map {
     int roomsCount;
     int currentRoom;
     Room *rooms;
+    bool *connections;
 } Map;
 
 Cell getCurrentRoomCell(int row, int column);
@@ -69,6 +70,7 @@ Cell** getCurrentRoomMap();
 void generateMap(int RoomIndex, RoomType type, int roomSize);
 Room* getRoom(int roomIndex);
 Room* getCurrentRoom();
+bool areRoomsConnected(int firstRoom, int secondRoom);
 State mapMove();
 int checkPossibleMovesMap(char *possibleInputs);
 void completeMap();

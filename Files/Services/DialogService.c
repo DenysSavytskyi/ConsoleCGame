@@ -1,9 +1,8 @@
 #include "DialogService.h"
 
-#include <stdio.h>
-
 #include "../Modules/Adventurer.h"
 #include <stdlib.h>
+#include <ncurses.h>
 
 
 State dialogService() {
@@ -11,6 +10,7 @@ State dialogService() {
         createAdventurer();
         return MAP_STATE;
     }
-    printf("You already have a character.\n");
+    printw("You already have a character.\n");
+    refresh();
     return END_STATE;
 }
