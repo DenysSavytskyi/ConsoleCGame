@@ -2,18 +2,27 @@
 // Created by User on 17.10.2026.
 //
 
-#include "Ability.h"
 #ifndef JAC_ENEMY_H
 #define JAC_ENEMY_H
+#include <stdbool.h>
+#include "Ability.h"
 #pragma once
 
+typedef enum EnemyType {
+    GOBLIN,
+    ORC,
+    TROLL,
+    SKELETON,
+    ZOMBIE,
+    VAMPIRE,
+    WITCH,
+    DEMON
+} EnemyType;
+
 typedef struct Enemy {
-    char name[50];
+    EnemyType type;
     int hp;
-    int damage;
-    Ability ability;
-    int x;
-    int y;
+    int roomIndex;
 } Enemy;
 
 

@@ -16,6 +16,7 @@
 #include "Files/Services/ShopService.h"
 
 int main() {
+    sleep_ms(1000);
     initializeController();
     srand(time(0));
     State currentState = DIALOG_STATE;

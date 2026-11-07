@@ -84,24 +84,24 @@ void printMinimap() {
         refresh();
         return;
     }
-    WINDOW *minimapWindow = newwin(9, 12, 0, startX);
+    WINDOW *minimapWindow = newwin(7, 9, 0, startX);
     box(minimapWindow, 0, 0);
-    mvwprintw(minimapWindow, 0, 2, "Minimap");
+    mvwprintw(minimapWindow, 0, 1, "Minimap");
 
     for (int i = 0; i < getMap()->roomsCount; i++) {
         int row = i / 3;
         int col = i % 3;
         int color = colorForRoom(getMinimap()[i]);
         if (color) wattron(minimapWindow, COLOR_PAIR(color));
-        mvwaddch(minimapWindow, row * 2 + 1, col * 2 + 1, getMinimap()[i]);
+        mvwaddch(minimapWindow, row * 2 + 1, col * 2 + 2, getMinimap()[i]);
         if (color) wattroff(minimapWindow, COLOR_PAIR(color));
 
         if (col < 2 && areRoomsConnected(i, i + 1)) {
-            mvwaddch(minimapWindow, row * 2 + 1, col * 2 + 2, ACS_HLINE);
+            mvwaddch(minimapWindow, row * 2 + 1, col * 2 + 3, ACS_HLINE);
         }
         if (row < 2 && i + 3 < getMap()->roomsCount &&
             areRoomsConnected(i, i + 3)) {
-            mvwaddch(minimapWindow, row * 2 + 2, col * 2 + 1, ACS_VLINE);
+            mvwaddch(minimapWindow, row * 2 + 2, col * 2 + 2, ACS_VLINE);
         }
     }
     wrefresh(minimapWindow);
@@ -121,7 +121,7 @@ char getAndCheckMapInput() {
         for (int i = 0; i < inputCount; i++) {
             printw(" %c", possibleInputs[i]);
         }
-        printw("\nEnter your move: ");
+        printw("\nEnter your move:\n");
         refresh();
 
         char input = (char)getch();

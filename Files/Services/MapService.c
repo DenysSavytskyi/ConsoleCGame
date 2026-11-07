@@ -1,7 +1,3 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #include "MapService.h"
 #include <stdlib.h>
 
@@ -252,45 +248,51 @@ State mapService() {
 
 State mapMove() {
     char input = getAndCheckMapInput();
-    if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Enemy)
-        return BATTLE_STATE;
     switch (input) {
         case 'w':
             setY(getAdventurer()->y-1);
-            return MAP_STATE;
+            break;
         case 'a':
             setX(getAdventurer()->x-1);
-            return MAP_STATE;
+            break;
         case 's':
             setY(getAdventurer()->y+1);
-            return MAP_STATE;
+            break;
         case 'd':
             setX(getAdventurer()->x+1);
-            return MAP_STATE;
+            break;
         case 'e':
             switch (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x)) {
                 case Stuff:
+                    //TODO add item to inventory
                     return INVENTORY_STATE;
                 case Treasure:
+                    //TODO add treasure to inventory
                     return INVENTORY_STATE;
                 case Shop:
+                    //TODO enter shop
                     return SHOP_STATE;
                 case NPC:
+                    //TODO start dialog
                     return DIALOG_STATE;
                 case Portal:
                     completeMap();
-                    return MAP_STATE;
+                    break;
                 case Door:
                     nextRoom();
-                    return MAP_STATE;
+                    break;
                 default:
-                    return MAP_STATE;
+                    break;
             }
             break;
         case 'i':
             return INVENTORY_STATE;
         default:
+            break;
     }
+    if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Enemy)
+        return BATTLE_STATE;
+    return MAP_STATE;
 }
 
 int checkPossibleMovesMap(char *possibleInputs) {
@@ -307,13 +309,22 @@ int checkPossibleMovesMap(char *possibleInputs) {
     if (getAdventurer()->y+1 < getCurrentRoom()->roomSize && getCurrentRoomCell(getAdventurer()->y+1, getAdventurer()->x) != Wall) {
         possibleInputs[count++] = 's';
     }
-    possibleInputs[count++] = 'e';
+    if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Stuff ||
+        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Treasure ||
+        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Shop ||
+        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == NPC ||
+        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Portal ||
+        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Door) {
+        possibleInputs[count++] = 'e';
+    }
     possibleInputs[count++] = 'i';
     return count;
 }
 
 void completeMap() {
     map = NULL;
+    minimap = NULL;
     level++;
+    //TODO Free previous map and minimap if they exist
     initMap();
 }

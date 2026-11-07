@@ -49,6 +49,7 @@ add_executable(Game
         Files/Controllers/Controller.h
         Files/Services/Service.c
         Files/Services/Service.h
+        Files/Modules/Profession.c
 )
 
 target_link_libraries(Game ncursesw)

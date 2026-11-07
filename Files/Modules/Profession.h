@@ -14,4 +14,6 @@ typedef enum Profession {
     CLERIC
 } Profession;
 
+char* getASCII(Profession profession, int line);
+
 #endif //JAC_PROFESSION_H

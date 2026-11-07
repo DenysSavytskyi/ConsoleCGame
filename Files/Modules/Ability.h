@@ -6,11 +6,19 @@
 #define JAC_ABILITY_H
 #pragma once
 
+#include "../Services/Service.h"
+
 typedef enum Ability {
+    BLOCK,
     FIREBALL,
-    HEAL,
-    ESCAPE,
-    INVISIBILITY,
+    STEAL,
+    SMOKE_BOMB,
+    CLONE
 } Ability;
+
+bool isSmokeActive();
+bool isBlockActive();
+void smoke();
+void block();
 
 #endif //JAC_ABILITY_H

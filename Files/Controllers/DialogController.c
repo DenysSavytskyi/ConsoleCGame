@@ -23,7 +23,7 @@ void printTyped(const char *text, int lineOfText, int startX) {
 static int getFrameWidth(int terminalWidth) {
     int width = terminalWidth / 2 - 2;
     if (width > 50) width = 50;
-    if (width < 12) width = 12;
+    if (width < 20) width = 20;
     return width;
 }
 
@@ -46,14 +46,12 @@ static WINDOW *createFrame(bool left, int numberOfLines, int *textY, int *textX)
         currentLine = 0;
     }
 
-    WINDOW *frame = newwin(height, width, currentLine, x);
+    WINDOW *frame = newwin(height, width + 1, currentLine, x);
     box(frame, 0, 0);
     if (left) {
         mvwaddch(frame, 1, 0, ACS_RTEE);
-        mvwaddch(frame, 1, 1, ACS_HLINE);
     } else {
-        mvwaddch(frame, 1, width - 1, ACS_LTEE);
-        mvaddch(currentLine + 1, x + width, ACS_HLINE);
+        mvwaddch(frame, 1, width, ACS_LTEE);
     }
     wrefresh(frame);
     *textY = currentLine + 1;

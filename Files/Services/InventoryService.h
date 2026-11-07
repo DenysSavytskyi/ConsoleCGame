@@ -1,12 +1,19 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #ifndef INVENTORY_SERVICE_H
 #define INVENTORY_SERVICE_H
 #pragma once
-
+#include "../Modules/Adventurer.h"
+#include <stddef.h>
 #include "../Modules/State.h"
+#define INVENTORY_SIZE 10
+
+typedef enum ItemType {
+    POTION,
+    WEAPON,
+    ARMOR,
+    QUEST_ITEM,
+    ITEM_NULL
+} ItemType;
+
 typedef enum PotionType {
     HEALTH,
     STRENGTH,
@@ -40,11 +47,20 @@ typedef union Item {
     QuestItem questItem;
 } Item;
 
-typedef struct InventoryService {
-    Item items[10];
-    int itemCount;
+typedef struct ItemAndType {
+    Item item;
+    ItemType type;
+} ItemAndType;
+
+typedef struct Inventory {
+    ItemAndType items[INVENTORY_SIZE];
 } Inventory;
 
 State inventoryService();
+void newInventory();
+ItemAndType* getItem(int index);
+int getItemCount(ItemType type);
+Potion* getPotion(int index);
+void usePotion(Potion *potion);
 
 #endif
