@@ -4,6 +4,7 @@
 #include "InventoryService.h"
 
 static Inventory* inventory = NULL;
+static ItemAndType* newItemAndType = NULL;
 
 State inventoryService() {
     return END_STATE;
@@ -11,13 +12,35 @@ State inventoryService() {
 
 void newInventory() {
     inventory = malloc(sizeof(Inventory));
-    for (int i=0; i<INVENTORY_SIZE; i++) {
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
         inventory->items[i].type = ITEM_NULL;
     }
 }
 
+void setNewItemAndType(ItemAndType* itemAndType) {
+    newItemAndType = itemAndType;
+}
+
+ItemAndType* getNewItemAndType() {
+    return newItemAndType;
+}
+
+int addItem(ItemAndType* itemAndType) {
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        if (inventory->items[i].type == ITEM_NULL) {
+            inventory->items[i] = *itemAndType;
+            return 1;
+        }
+    }
+    if (newItemAndType == NULL || newItemAndType->type == ITEM_NULL) {
+        newItemAndType = itemAndType;
+        return 1;
+    }
+    return 0;
+}
+
 ItemAndType* getItem(int index) {
-    if (index < 0 || index > INVENTORY_SIZE) {
+    if (index < 0 || index > INVENTORY_SIZE - 1) {
         return NULL;
     }
     return &inventory->items[index];
@@ -25,7 +48,7 @@ ItemAndType* getItem(int index) {
 
 int getItemCount(ItemType type) {
     int count = 0;
-    for (int i=0; i<INVENTORY_SIZE; i++) {
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (getItem(i)->type == type) {
             count++;
         }
@@ -35,7 +58,7 @@ int getItemCount(ItemType type) {
 
 Potion* getPotion(int index) {
     int count = 0;
-    for (int i=0; i<INVENTORY_SIZE; i++) {
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (getItem(i)->type == POTION) {
             if (index == count) {
                 return &getItem(i)->item.potion;

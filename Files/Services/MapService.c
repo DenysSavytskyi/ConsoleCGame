@@ -4,6 +4,32 @@
 static int level = 0;
 static Map *map = NULL;
 static RoomType *minimap = NULL;
+
+static void freeMap() {
+    if (!map) return;
+    for (int i = 0; i < map->roomsCount; i++) {
+        for (int j = 0; j < map->rooms[i].roomSize; j++) {
+            free(map->rooms[i].roomMap[j]);
+        }
+        free(map->rooms[i].roomMap);
+    }
+    free(map->rooms);
+    free(map->connections);
+    free(map);
+    map = NULL;
+}
+
+static void freeMinimap() {
+    if (minimap) {
+        free(minimap);
+        minimap = NULL;
+    }
+}
+
+int getLevel() {
+    return level;
+}
+
 void initMap() {
     map = malloc(sizeof(Map));
     map->roomsCount = getRandom(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT);
@@ -33,12 +59,16 @@ void initRooms(int roomsCount) {
     RoomType possibleTypes[] = {TreasureRoom, EnemyRoom, EnemyRoom, EnemyRoom, EnemyRoom, ShopRoom, NPCRoom};
     initRoom(0, StartRoom);
     initRoom(roomsCount-1, BossRoom);
+    generateEnemy(roomsCount-1, true);
     for (int i = 1; i < roomsCount-1; i++) {
         int rand = getRandom(0, 6);
         while (possibleTypes[rand] == NullRoom) {
             rand = getRandom(0, 6);
         }
         initRoom(i, possibleTypes[rand]);
+        if (possibleTypes[rand] == EnemyRoom) {
+            generateEnemy(i, false);
+        }
         possibleTypes[rand] = NullRoom;
     }
     connectRooms(roomsCount);
@@ -90,12 +120,12 @@ void generateMap(int roomIndex, RoomType roomType, int roomSize) {
             }
         }
     }
-    int randomWallsCount = getRandom(1, roomSize - 3);
+    int randomWallsCount = getRandom(3, roomSize - 3);
     for (int i = 0; i < randomWallsCount; i++) {
         int x = getRandom(1, roomSize - 2);
         int y = getRandom(1, roomSize - 2);
         while (
-            roomIndex == 0 && x == getAdventurer()->x || y == getAdventurer()->y ||
+            (roomIndex == 0 && (x == getAdventurer()->x || y == getAdventurer()->y)) ||
             getRoomCell(roomIndex, y, x) != Empty ||
             getRoomCell(roomIndex, y+1, x) != Empty ||
             getRoomCell(roomIndex, y, x+1) != Empty ||
@@ -108,8 +138,9 @@ void generateMap(int roomIndex, RoomType roomType, int roomSize) {
         setRoomCell(roomIndex, y, x, Wall);
     }
 
-    setRoomCell(roomIndex, getRandom(2, roomSize-2), getRandom(2, roomSize-2), element);
+    setRoomCell(roomIndex, getRandom(2, roomSize-3), getRandom(2, roomSize-3), element);
 }
+
 void setDoors(int firstRoom, int secondRoom) {
     if (firstRoom < 0 || secondRoom < 0 ||
         firstRoom >= map->roomsCount || secondRoom >= map->roomsCount) {
@@ -135,6 +166,7 @@ void setDoors(int firstRoom, int secondRoom) {
     map->connections[firstRoom * map->roomsCount + secondRoom] = true;
     map->connections[secondRoom * map->roomsCount + firstRoom] = true;
 }
+
 void connectRooms(int roomsCount) {
     RoomType *graph = malloc(roomsCount * sizeof(RoomType));
     bool *isVisited = malloc(roomsCount * sizeof(bool));
@@ -277,6 +309,7 @@ State mapMove() {
                     return DIALOG_STATE;
                 case Portal:
                     completeMap();
+                    getAdventurer()->hp = getAdventurer()->hpMax;
                     break;
                 case Door:
                     nextRoom();
@@ -321,10 +354,19 @@ int checkPossibleMovesMap(char *possibleInputs) {
     return count;
 }
 
+void removeEnemyFromMap(bool isBoss) {
+    if (isBoss) {
+        setCurrentRoomCell(getAdventurer()->y, getAdventurer()->x, Portal);
+        return;
+    }
+    //TODO make random chance to drop item and replace enemy with item
+    setCurrentRoomCell(getAdventurer()->y, getAdventurer()->x, Empty);
+}
+
 void completeMap() {
-    map = NULL;
-    minimap = NULL;
     level++;
-    //TODO Free previous map and minimap if they exist
+    freeEnemies();
+    freeMap();
+    freeMinimap();
     initMap();
 }

@@ -19,8 +19,8 @@ add_executable(Game
         Files/Modules/Ability.h
         Files/Modules/Adventurer.c
         Files/Modules/Adventurer.h
-        Files/Modules/Enemy.c
-        Files/Modules/Enemy.h
+        Files/Modules/EnemyEntity.c
+        Files/Modules/EnemyEntity.h
         Files/Services/MapService.c
         Files/Services/MapService.h
         Files/Services/BattleService.c

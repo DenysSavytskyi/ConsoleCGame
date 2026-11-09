@@ -32,9 +32,9 @@ char getAndCheckBattleInput() {
                 inputsCount = getAbilityCount();
                 break;
         }
-        char possibleInputs[inputsCount + 1];
-        possibleInputs[inputsCount] = '\0';
+        char possibleInputs[inputsCount + 1]; //[0][1]...[n] and terminator n<=9
         int inputCount = checkPossibleMovesBattle(possibleInputs);
+        possibleInputs[inputCount] = '\0';
         mvprintw(OPTIONS_Y + INFO_Y + 1, 0, "Possible moves:\n");
         for (int i = 0; i < inputCount; i++) {
             printw(" %c", possibleInputs[i]);
@@ -75,8 +75,11 @@ void printBattle() {
     for (int i = 0; i < 9; i++) {
         mvwprintw(infoWin, 1 + i, 1, "%s", getASCII(getAdventurer()->profession, i));
     }
+    int color =  1;
+    if (color) wattron(infoWin, COLOR_PAIR(color));
     mvwprintw(infoWin, INFO_Y-2, 1, "hp: %d/%d", getAdventurer()->hp, getAdventurer()->hpMax);
-    mvwprintw(infoWin, INFO_Y-2, INFO_X/2+1, "hp: 100/100"); //TODO: replace with actual enemy hp
+    mvwprintw(infoWin, INFO_Y-2, INFO_X/2+1, "hp: %d/%d", getEnemyHp(getMap()->currentRoom), getEnemyMaxHp(getMap()->currentRoom));
+    if (color) wattroff(infoWin, COLOR_PAIR(color));
     wrefresh(infoWin);
 
     WINDOW *optionsWin = derwin(win, OPTIONS_Y, OPTIONS_X, INFO_Y+1, 0);

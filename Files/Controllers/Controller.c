@@ -21,13 +21,15 @@ void initializeController() {
     cbreak();
     noecho();
     curs_set(0);
-    start_color();
-    use_default_colors();
-    init_pair(1, COLOR_RED, -1);
-    init_pair(2, COLOR_GREEN, -1);
-    init_pair(3, COLOR_BLUE, -1);
-    init_pair(4, COLOR_YELLOW, -1);
-    init_pair(5, COLOR_CYAN, -1);
+    if (has_colors()) {
+        start_color();
+        init_pair(1, COLOR_RED, COLOR_BLACK);
+        init_pair(2, COLOR_GREEN, COLOR_BLACK);
+        init_pair(3, COLOR_BLUE, COLOR_BLACK);
+        init_pair(4, COLOR_YELLOW, COLOR_BLACK);
+        init_pair(5, COLOR_CYAN, COLOR_BLACK);
+        init_pair(6, COLOR_BLACK, COLOR_WHITE);
+    }
     keypad(stdscr, FALSE);
 }
 

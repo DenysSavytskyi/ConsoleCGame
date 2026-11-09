@@ -2,21 +2,19 @@
 // Created by User on 17.10.2026.
 //
 
-#include "Enemy.h"
+#include "EnemyEntity.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include "../Services/Service.h"
 
-static Enemy* enemies = NULL;
+static EnemyEntity* enemies = NULL;
 static int enemiesCount = 0;
 
-void generateEnemy(int roomIndex) {
+void generateEnemy(int roomIndex, bool isBoss) {
     if (enemies == NULL) {
-        enemies = malloc(sizeof(Enemy));
-        enemiesCount++;
+        enemies = malloc(sizeof(EnemyEntity));
     } else {
-        enemies = realloc(enemies, sizeof(Enemy) * (enemiesCount+ 1));
-        enemiesCount++;
+        enemies = realloc(enemies, sizeof(EnemyEntity) * (enemiesCount + 1));
     }
     switch ((EnemyType)getRandom(0,7)) {
         case GOBLIN:
@@ -52,7 +50,15 @@ void generateEnemy(int roomIndex) {
             enemies[enemiesCount].hp = 40;
             break;
     }
+    enemies[enemiesCount].maxHp = enemies[enemiesCount].hp;
+    enemies[enemiesCount].isBoss = isBoss;
+    int bossHp = isBoss*getLevel()*enemies[enemiesCount].hp;
+    if (bossHp != 0) {
+        enemies[enemiesCount].hp = bossHp;
+        enemies[enemiesCount].maxHp = bossHp;
+    }
     enemies[enemiesCount].roomIndex = roomIndex;
+    enemiesCount++;
 }
 
 int getEnemiesCount() {
@@ -82,10 +88,13 @@ int getEnemyDamage(int roomIndex) {
                     return 9;
                 case DEMON:
                     return 20;
+                default:
+                    return 0;
             }
         }
     }
 }
+
 int attackEnemy(int roomIndex, int damage) {
     if (enemies == NULL) {
         return -1;
@@ -94,16 +103,19 @@ int attackEnemy(int roomIndex, int damage) {
         if (enemies[i].roomIndex == roomIndex) {
             enemies[i].hp -= damage;
             if (enemies[i].hp <= 0) {
+                getRewards(enemies[i].maxHp);
+                removeEnemyFromMap(enemies[i].isBoss);
                 for (int j = i; j < enemiesCount - 1; j++) {
                     enemies[j] = enemies[j + 1];
                 }
                 enemiesCount--;
-                enemies = realloc(enemies, sizeof(Enemy) * enemiesCount);
+                enemies = realloc(enemies, sizeof(EnemyEntity) * enemiesCount);
                 return 1; // Enemy defeated
             }
             return 0; // Enemy still alive
         }
     }
+    return -1; // Enemy not found
 }
 
 int getEnemyHp(int roomIndex) {
@@ -116,4 +128,22 @@ int getEnemyHp(int roomIndex) {
         }
     }
     return 0;
+}
+
+int getEnemyMaxHp(int roomIndex) {
+    if (enemies == NULL) {
+        return 0;
+    }
+    for (int i = 0; i < enemiesCount; i++) {
+        if (enemies[i].roomIndex == roomIndex) {
+            return enemies[i].maxHp;
+        }
+    }
+    return 0;
+}
+
+void freeEnemies() {
+    free(enemies);
+    enemies = NULL;
+    enemiesCount = 0;
 }

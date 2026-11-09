@@ -5,6 +5,8 @@
 #include "string.h"
 #include "ncurses.h"
 #include "Adventurer.h"
+
+#include "EnemyEntity.h"
 #include "Profession.h"
 #include "../Controllers/DialogController.h"
 
@@ -28,6 +30,10 @@ void checkPotionTime() {
         setDamage(getAdventurer()->damage - lastPotionDamage);
         lastPotionDamage = 0;
     }
+}
+
+void setLastPotionDamage(int damage) {
+    lastPotionDamage = damage;
 }
 
 void setHp(int hp) {
@@ -60,6 +66,21 @@ void setY(int y) {
     adventurer->y = y;
 }
 
+void attackAdventurer() {
+    if (isCloneActive()) {
+        if (getRandom(0, 1)) {
+            clone(false);
+            return;
+        }
+    }
+    if (isSmokeActive()) {
+        return;
+    }
+    if (isBlockActive()) {
+        return;
+    }
+    adventurer->hp-=getEnemyDamage(getMap()->currentRoom);
+}
 
 int getAbilityCount() {
     return adventurer->abilityCount;
@@ -74,8 +95,15 @@ void addAbility(Ability *ability) {
     }
     int abilitiesCount = getAbilityCount();
     adventurer->abilityCount = abilitiesCount + 1;
-    adventurer->abilities = realloc(adventurer->abilities, sizeof(Ability) * abilitiesCount);
-    adventurer->abilities[abilitiesCount - 1] = *ability;
+    adventurer->abilities = realloc(adventurer->abilities, sizeof(Ability) * adventurer->abilityCount);
+    adventurer->abilities[adventurer->abilityCount - 1] = *ability;
+}
+
+void getRewards(int enemyMaxHp) {
+    int moneyReward = getRandom(enemyMaxHp-10, enemyMaxHp);
+    int xpReward = getRandom(enemyMaxHp-10, enemyMaxHp);
+    setMoney(getAdventurer()->money + moneyReward);
+    setXp(getAdventurer()->xp + xpReward);
 }
 
 Adventurer* getAdventurer() {

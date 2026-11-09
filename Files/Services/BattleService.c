@@ -8,41 +8,53 @@ State battleService() {
         if (state != BATTLE_STATE) {
             return state;
         }
-        //TODO if enemy is dead, return MAP_STATE and reward player with money, xp and probably an item
     }
     return END_STATE;
 }
 
+int calculateDamage() {
+    if (isCloneActive()) {
+        return getAdventurer()->damage * 1.5;
+    }
+    return getAdventurer()->damage;
+}
+
 State battle() {
     char option = getAndCheckBattleInput();
+    checkPotionTime();
     if (getBattleState() == OPTIONS) {
         switch (option) {
             case '0':
-                //TODO Attack
-                return BATTLE_STATE;
+                int result = attackEnemy(getMap()->currentRoom, calculateDamage());
+                if (result == -1) {
+                    printw("Unknown error occurred.\n");
+                    return END_STATE;
+                }
+                if (result == 1) {
+                    return MAP_STATE;
+                }
+                break;
             case '1':
                 setBattleState(POTIONS);
                 //TODO to output potion list
                 return BATTLE_STATE;
             case '2':
                 setBattleState(ABILITIES);
-                //TODO to output ability list
                 return BATTLE_STATE;
             case '3':
-                //TODO Run Away
                 return MAP_STATE;
             default:
-                printw("Invalid option. Please try again.\n");
+                return BATTLE_STATE;
         }
     } else if (getBattleState() == POTIONS) {
-        //TODO Handle potion usage
+        //TODO Handle potion usage     usePotion(getPotion(option - '0'));
         setBattleState(OPTIONS);
-        return BATTLE_STATE;
     } else if (getBattleState() == ABILITIES) {
-        //TODO Handle ability usage
+        //TODO Handle ability usage    useAbility(option - '0');
         setBattleState(OPTIONS);
-        return BATTLE_STATE;
     }
+    attackAdventurer();
+    return BATTLE_STATE;
 }
 
 int checkPossibleMovesBattle(char *possibleInputs) {

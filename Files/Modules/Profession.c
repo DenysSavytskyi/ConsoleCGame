@@ -1,6 +1,6 @@
 #include "Profession.h"
 
-const char *fighter[] = {
+char *fighter[] = {
     "   /##\\     ",
     "  | ## |    ",
     " /|{==}|\\   ",
@@ -12,17 +12,67 @@ const char *fighter[] = {
     " /_/  \\_\\   "
 };
 
+char *mage[] = {
+    "     /\\     ",
+    "    /  \\    ",
+    "   /    \\   ",
+    "  /______\\  ",
+    "  | (o.o)|  ",
+    " /|  ##  |\\*",
+    "/ |  ##  | |",
+    "  +==++==+  ",
+    "  /______\\  "
+};
+
+char *thief[] = {
+    "   /----\\   ",
+    "  /  %%  \\  ",
+    "  | (..) |  ",
+    "  \\  --  /  ",
+    "  /| OO |\\  ",
+    " / | OO | \\ ",
+    "   +====+  X",
+    "   /    \\ / ",
+    "  /______\\  "
+};
+
+char *bard[] = {
+    "    /\\/\\    ",
+    "   ( . .)   ",
+    "   /\\--/\\   ",
+    "  /| #  |\\  ",
+    " / | $  | \\ ",
+    "(  | ## |  )",
+    " \\ \\/--\\/ / ",
+    "  \\______/  ",
+    "  /_/  \\_\\  "
+};
+
+char *cleric[] = {
+    "    +--+    ",
+    "   /+--+\\   ",
+    "   | v v|   ",
+    "  /++--++\\  ",
+    " /|  ##  |\\ ",
+    "| | #### | |",
+    " \\|  ##  |/ ",
+    "  +-+--+-+  ",
+    "   /_||_\\   "
+};
+
 char* getASCII(Profession profession, int line) {
     switch (profession) {
         case FIGHTER:
             return fighter[line];
         case MAGE:
-            return "Mage ASCII Art";
+            return mage[line];
         case THIEF:
-            return "Thief ASCII Art";
+            return thief[line];
         case BARD:
-            return "Bard ASCII Art";
+            return bard[line];
         case CLERIC:
-            return "Cleric ASCII Art";
+            return cleric[line];
+        default:
+            return "ASCII  IMAGE";
     }
 }

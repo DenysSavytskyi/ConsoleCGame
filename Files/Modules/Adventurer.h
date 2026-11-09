@@ -9,6 +9,7 @@
 #include "Profession.h"
 #include <stdbool.h>
 #include "Ability.h"
+#include "../Services/MapService.h"
 
 typedef struct Adventurer {
     char name[50];
@@ -28,6 +29,9 @@ typedef struct Adventurer {
 void setPotionTime(int time);
 int getPotionTime();
 void checkPotionTime();
+void setLastPotionDamage(int damage);
+void setCloneActive(bool active);
+bool getCloneActive();
 void setHp(int hp);
 void setDamage(int damage);
 void setMoney(int money);
@@ -35,8 +39,10 @@ void setLevel(int level);
 void setXp(int xp);
 void setX(int x);
 void setY(int y);
+void attackAdventurer();
 int getAbilityCount();
 void addAbility(Ability *ability);
+void getRewards(int enemyMaxHp);
 
 Adventurer* newAdventurer(char *name, Profession profession, Ability ability, int hpMax, int damage, int money, int xp, int x, int y);
 Adventurer* getAdventurer();

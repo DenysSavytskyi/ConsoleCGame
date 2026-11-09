@@ -10,9 +10,10 @@
 #include "../Modules/State.h"
 #include "../Modules/Adventurer.h"
 #include "../Controllers/MapController.h"
+#include "../Modules/EnemyEntity.h"
 
-#define MIN_ROOM_SIZE 8
-#define MAX_ROOM_SIZE 15
+#define MIN_ROOM_SIZE 15
+#define MAX_ROOM_SIZE 25
 #define MIN_ROOMS_COUNT 6
 #define MAX_ROOMS_COUNT 9
 
@@ -52,6 +53,7 @@ typedef struct Map {
     bool *connections;
 } Map;
 
+int getLevel();
 Cell getCurrentRoomCell(int row, int column);
 void setCurrentRoomCell(int row, int column, Cell cell);
 Cell getRoomCell(int roomIndex, int row, int column);
@@ -73,6 +75,7 @@ Room* getCurrentRoom();
 bool areRoomsConnected(int firstRoom, int secondRoom);
 State mapMove();
 int checkPossibleMovesMap(char *possibleInputs);
+void removeEnemyFromMap(bool isBoss);
 void completeMap();
 
 #endif //JAC_MAP_H

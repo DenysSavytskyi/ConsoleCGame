@@ -6,6 +6,8 @@
 #include "../Services/InventoryService.h"
 #include "../Services/Service.h"
 #include "../Services/BattleService.h"
+#include "../Modules/EnemyEntity.h"
+#include "../Services/MapService.h"
 
 typedef enum BattleState {
     POTIONS,

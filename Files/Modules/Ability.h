@@ -16,9 +16,17 @@ typedef enum Ability {
     CLONE
 } Ability;
 
-bool isSmokeActive();
-bool isBlockActive();
-void smoke();
+
 void block();
+void fireball();
+void steal();
+void smoke();
+void clone(bool isActive);
+bool isBlockActive();
+bool isSmokeActive();
+bool isCloneActive();
+
+
+
 
 #endif //JAC_ABILITY_H
