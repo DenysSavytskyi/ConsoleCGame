@@ -1,6 +1,8 @@
 #define MIN_MONEY 30
 #define MAX_MONEY 50
 #include "ItemGenerator.h"
+#include "Adventurer.h"
+#include "../Services/Service.h"
 #pragma once
 
 ItemAndType generateTreasure() {

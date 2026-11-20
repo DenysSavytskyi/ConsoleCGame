@@ -1,4 +1,12 @@
 #include "MapService.h"
+#include "../Modules/Adventurer.h"
+#include "../Modules/EnemyEntity.h"
+#include "../Modules/ItemGenerator.h"
+#include "../Controllers/MapController.h"
+#include "InventoryService.h"
+#include "ShopService.h"
+#include "DialogService.h"
+#include "../Controllers/EndController.h"
 #pragma once
 
 static int level = 0;

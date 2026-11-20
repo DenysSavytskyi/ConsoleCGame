@@ -1,7 +1,6 @@
 #ifndef GAME_ITEMGENERATOR_H
 #define GAME_ITEMGENERATOR_H
-#include "../Services/InventoryService.h"
-#include "Adventurer.h"
+#include "ItemTypes.h"
 #pragma once
 
 ItemAndType generateTreasure(); //returns ItemAndType with Type ITEM_NULL if returns money and ItemAndType if returns item

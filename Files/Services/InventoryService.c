@@ -1,4 +1,6 @@
 #include "InventoryService.h"
+#include "../Modules/Adventurer.h"
+#include "MapService.h"
 #pragma once
 
 static Inventory* inventory = NULL;

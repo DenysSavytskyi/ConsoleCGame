@@ -1,17 +1,26 @@
 cmake_minimum_required(VERSION 3.26)
 
+if(EXISTS "C:/msys64/ucrt64/bin/gcc.exe")
+    set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
+endif()
+
 project(Game C)
 
 set(CMAKE_C_STANDARD 11)
 
-include_directories("C:/msys64/ucrt64/include")
-include_directories("C:/msys64/ucrt64/include/ncurses")
-link_directories("C:/msys64/ucrt64/lib")
+if(EXISTS "C:/msys64/ucrt64/lib/libncursesw.a")
+    set(CURSES_INCLUDE_DIR "C:/msys64/ucrt64/include;C:/msys64/ucrt64/include/ncurses")
+    set(CURSES_LIBRARIES ncursesw)
+    link_directories("C:/msys64/ucrt64/lib")
+else()
+    find_package(Curses REQUIRED)
+endif()
 
 add_executable(Game
         Game.c
         Files/Modules/Profession.h
         Files/Modules/State.h
+        Files/Modules/ItemTypes.h
         Files/Modules/Ability.c
         Files/Modules/Ability.h
         Files/Modules/Adventurer.c
@@ -51,4 +60,5 @@ add_executable(Game
         Files/Modules/ItemGenerator.h
 )
 
-target_link_libraries(Game ncursesw)
+target_include_directories(Game PRIVATE ${CURSES_INCLUDE_DIR})
+target_link_libraries(Game PRIVATE ${CURSES_LIBRARIES})

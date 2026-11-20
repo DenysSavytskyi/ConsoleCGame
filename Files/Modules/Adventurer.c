@@ -1,4 +1,8 @@
 #include "Adventurer.h"
+#include "EnemyEntity.h"
+#include "../Services/MapService.h"
+#include "../Services/InventoryService.h"
+#include "../Controllers/DialogController.h"
 #pragma once
 
 static Adventurer *adventurer = NULL;

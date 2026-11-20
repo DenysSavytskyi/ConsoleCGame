@@ -1,4 +1,10 @@
 #include "BattleService.h"
+#include "../Modules/Adventurer.h"
+#include "../Modules/EnemyEntity.h"
+#include "MapService.h"
+#include "../Controllers/EndController.h"
+#include "../Controllers/BattleController.h"
+#include "InventoryService.h"
 #pragma once
 
 State battleService() {

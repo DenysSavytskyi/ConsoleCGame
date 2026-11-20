@@ -1,4 +1,11 @@
 #include "BattleController.h"
+#include "../Modules/Adventurer.h"
+#include "../Modules/EnemyEntity.h"
+#include "../Modules/Ability.h"
+#include "../Modules/Profession.h"
+#include "../Services/BattleService.h"
+#include "../Services/MapService.h"
+#include "../Services/InventoryService.h"
 #pragma once
 
 #define INFO_Y 13

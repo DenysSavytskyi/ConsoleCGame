@@ -1,4 +1,6 @@
 #include "EnemyEntity.h"
+#include "../Services/MapService.h"
+#include "Adventurer.h"
 #pragma once
 
 static EnemyEntity* enemies = NULL;

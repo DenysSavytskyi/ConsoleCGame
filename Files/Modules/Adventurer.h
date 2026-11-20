@@ -4,14 +4,10 @@
 
 #ifndef JAC_ADVENTURER_H
 #define JAC_ADVENTURER_H
-#include "../Services/InventoryService.h"
-#include "stdlib.h"
-#include "string.h"
-#include "EnemyEntity.h"
-#include "Profession.h"
-#include "../Controllers/DialogController.h"
-#include "../Services/MapService.h"
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
+#include "Profession.h"
 #include "Ability.h"
 #pragma once
 

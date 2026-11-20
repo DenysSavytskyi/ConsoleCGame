@@ -1,17 +1,10 @@
 #ifndef JAC_MAP_H
 #define JAC_MAP_H
 #include <stdbool.h>
-#include "../Modules/State.h"
-#include "InventoryService.h"
 #include <stdlib.h>
+#include "../Modules/State.h"
+#include "../Modules/ItemTypes.h"
 #include "Service.h"
-#include "../Modules/Adventurer.h"
-#include "../Controllers/MapController.h"
-#include "../Modules/EnemyEntity.h"
-#include "../Controllers/EndController.h"
-#include "DialogService.h"
-#include "ShopService.h"
-#include "../Modules/ItemGenerator.h"
 #pragma once
 
 #define MIN_ROOM_SIZE 15

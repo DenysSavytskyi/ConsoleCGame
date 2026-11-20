@@ -2,10 +2,8 @@
 #define JAC_ENEMY_H
 #include <stddef.h>
 #include <stdlib.h>
-#include "Adventurer.h"
-#include "../Services/Service.h"
-#include "../Services/MapService.h"
 #include <stdbool.h>
+#include "../Services/Service.h"
 #pragma once
 
 typedef enum EnemyType {

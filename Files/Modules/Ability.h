@@ -1,7 +1,7 @@
 #ifndef JAC_ABILITY_H
 #define JAC_ABILITY_H
 #include "../Services/Service.h"
-#include "Adventurer.h"
+#include <stdbool.h>
 #pragma once
 
 typedef enum Ability {
