@@ -1,7 +1,3 @@
-//
-// Created by User on 06.10.2026.
-//
-
 #ifndef JAC_PROFESSION_H
 #define JAC_PROFESSION_H
 #pragma once

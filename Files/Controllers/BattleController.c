@@ -1,10 +1,10 @@
 #include "BattleController.h"
+#pragma once
 
 #define INFO_Y 13
 #define INFO_X 27
 #define OPTIONS_Y 13
 #define OPTIONS_X 27
-
 
 static BattleState battleState = OPTIONS;
 
@@ -51,7 +51,8 @@ char getAndCheckBattleInput() {
         }
     }
 }
-void printCross(WINDOW *infoWin) {
+
+static void printCross(WINDOW *infoWin) {
     int x = INFO_X / 2;
     int y = INFO_Y - 3;
 
@@ -67,6 +68,7 @@ void printCross(WINDOW *infoWin) {
     mvwaddch(infoWin, y, 0, ACS_LTEE);
     mvwaddch(infoWin, y, INFO_X-1, ACS_RTEE);
 }
+
 void printBattle() {
     WINDOW *win = newwin(OPTIONS_Y+INFO_X, INFO_X, 0, 0);
     WINDOW *infoWin = derwin(win, INFO_Y, INFO_X, 0, 0);
@@ -97,7 +99,22 @@ void printBattle() {
         mvwprintw(optionsWin, lineCount++, 1, "Potions: ");
         for (int i = 0; i < getItemCount(POTION); i++) {
             Potion *potion = getPotion(i);
-            mvwprintw(optionsWin, lineCount++, 1, "%d. %s (%d)", i, potion->name, potion->amount);
+            char* potionType = "UNKNOWN";
+            switch (potion->type) {
+                case HEALTH:
+                    potionType = "Health";
+                    break;
+                case STRENGTH:
+                    potionType = "Strength";
+                    break;
+                case DEFENCE:
+                    potionType = "Defence";
+                    break;
+                case EXPERIENCE:
+                    potionType = "Experience";
+                    break;
+            }
+            mvwprintw(optionsWin, lineCount++, 1, "%d. %s (%d)", i, potionType, potion->amount);
         }
     } else if (battleState == ABILITIES) {
         mvwprintw(optionsWin, lineCount++, 1, "Abilities: ");

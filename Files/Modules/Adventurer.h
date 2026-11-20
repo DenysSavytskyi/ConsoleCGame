@@ -4,12 +4,16 @@
 
 #ifndef JAC_ADVENTURER_H
 #define JAC_ADVENTURER_H
-#pragma once
 #include "../Services/InventoryService.h"
+#include "stdlib.h"
+#include "string.h"
+#include "EnemyEntity.h"
 #include "Profession.h"
+#include "../Controllers/DialogController.h"
+#include "../Services/MapService.h"
 #include <stdbool.h>
 #include "Ability.h"
-#include "../Services/MapService.h"
+#pragma once
 
 typedef struct Adventurer {
     char name[50];
@@ -26,9 +30,12 @@ typedef struct Adventurer {
     int y;
 } Adventurer;
 
-void setPotionTime(int time);
-int getPotionTime();
-void checkPotionTime();
+void setStrengthPotionTime(int time);
+void setDefencePotionTime(int time);
+int getStrengthPotionTime();
+int getDefencePotionTime();
+void checkStrengthPotionTime();
+int checkDefencePotionTime();
 void setLastPotionDamage(int damage);
 void setCloneActive(bool active);
 bool getCloneActive();
@@ -41,7 +48,8 @@ void setX(int x);
 void setY(int y);
 void attackAdventurer();
 int getAbilityCount();
-void addAbility(Ability *ability);
+void addAbility(const Ability *ability);
+int useAbility(int index);
 void getRewards(int enemyMaxHp);
 
 Adventurer* newAdventurer(char *name, Profession profession, Ability ability, int hpMax, int damage, int money, int xp, int x, int y);

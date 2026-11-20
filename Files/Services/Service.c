@@ -1,8 +1,5 @@
-//
-// Created by User on 20.10.2026.
-//
-
 #include "Service.h"
+#pragma once
 
 bool checkInput(const char *possibleInputs, char input) {
     if (possibleInputs == NULL)

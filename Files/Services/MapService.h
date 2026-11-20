@@ -1,21 +1,36 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #ifndef JAC_MAP_H
 #define JAC_MAP_H
-#pragma once
 #include <stdbool.h>
-#include "Service.h"
 #include "../Modules/State.h"
+#include "InventoryService.h"
+#include <stdlib.h>
+#include "Service.h"
 #include "../Modules/Adventurer.h"
 #include "../Controllers/MapController.h"
 #include "../Modules/EnemyEntity.h"
+#include "../Controllers/EndController.h"
+#include "DialogService.h"
+#include "ShopService.h"
+#include "../Modules/ItemGenerator.h"
+#pragma once
 
 #define MIN_ROOM_SIZE 15
 #define MAX_ROOM_SIZE 25
 #define MIN_ROOMS_COUNT 6
 #define MAX_ROOMS_COUNT 9
+
+typedef struct Reward {
+    int roomIndex;
+    int x;
+    int y;
+} Reward;
+
+typedef struct ItemAndTypeOnMap {
+    ItemAndType itemAndType;
+    int roomIndex;
+    int x;
+    int y;
+} ItemAndTypeOnMap;
 
 typedef enum RoomType {
     StartRoom = '1',
@@ -58,6 +73,8 @@ Cell getCurrentRoomCell(int row, int column);
 void setCurrentRoomCell(int row, int column, Cell cell);
 Cell getRoomCell(int roomIndex, int row, int column);
 void setRoomCell(int roomIndex, int row, int column, Cell cell);
+void addItemOnMap(ItemAndType item, int roomIndex, int x, int y);
+void addTreasureOnMap(int roomIndex, int x, int y);
 void initRooms(int roomsCount);
 void initRoom(int roomIndex, RoomType type);
 void initMap();

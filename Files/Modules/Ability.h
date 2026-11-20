@@ -1,12 +1,8 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #ifndef JAC_ABILITY_H
 #define JAC_ABILITY_H
-#pragma once
-
 #include "../Services/Service.h"
+#include "Adventurer.h"
+#pragma once
 
 typedef enum Ability {
     BLOCK,
@@ -16,17 +12,13 @@ typedef enum Ability {
     CLONE
 } Ability;
 
-
 void block();
-void fireball();
+int fireball();
 void steal();
 void smoke();
 void clone(bool isActive);
 bool isBlockActive();
 bool isSmokeActive();
 bool isCloneActive();
-
-
-
 
 #endif //JAC_ABILITY_H

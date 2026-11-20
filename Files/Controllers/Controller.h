@@ -1,9 +1,6 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #ifndef GAME_CONTROLLER_H
 #define GAME_CONTROLLER_H
+#include <ncurses.h>
 #pragma once
 
 void sleep_ms(int milliseconds);

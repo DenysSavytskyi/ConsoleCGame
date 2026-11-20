@@ -1,6 +1,5 @@
 #include "BattleService.h"
-
-#include "MapService.h"
+#pragma once
 
 State battleService() {
     while (getAdventurer()->hp > 0) {
@@ -9,34 +8,33 @@ State battleService() {
             return state;
         }
     }
+    setEndState(GAME_OVER);
     return END_STATE;
 }
 
-int calculateDamage() {
+static int calculateDamage() {
     if (isCloneActive()) {
-        return getAdventurer()->damage * 1.5;
+        return (int)(getAdventurer()->damage * 1.5);
     }
     return getAdventurer()->damage;
 }
 
 State battle() {
     char option = getAndCheckBattleInput();
-    checkPotionTime();
+    checkStrengthPotionTime();
     if (getBattleState() == OPTIONS) {
         switch (option) {
             case '0':
                 int result = attackEnemy(getMap()->currentRoom, calculateDamage());
                 if (result == -1) {
-                    printw("Unknown error occurred.\n");
                     return END_STATE;
                 }
-                if (result == 1) {
+                if (result) {
                     return MAP_STATE;
                 }
                 break;
             case '1':
                 setBattleState(POTIONS);
-                //TODO to output potion list
                 return BATTLE_STATE;
             case '2':
                 setBattleState(ABILITIES);
@@ -47,10 +45,22 @@ State battle() {
                 return BATTLE_STATE;
         }
     } else if (getBattleState() == POTIONS) {
-        //TODO Handle potion usage     usePotion(getPotion(option - '0'));
+        usePotion(getPotion(option - '0'));
         setBattleState(OPTIONS);
     } else if (getBattleState() == ABILITIES) {
-        //TODO Handle ability usage    useAbility(option - '0');
+        int result = useAbility(option - '0');
+        if (result == -1) {
+            return END_STATE;
+        }
+        if (result > 0) {
+            result = attackEnemy(getMap()->currentRoom, result);
+            if (result == -1) {
+                return END_STATE;
+            }
+            if (result) {
+                return MAP_STATE;
+            }
+        }
         setBattleState(OPTIONS);
     }
     attackAdventurer();

@@ -1,39 +1,52 @@
-//
-// Created by User on 06.10.2026.
-//
-#include "stdlib.h"
-#include "string.h"
-#include "ncurses.h"
 #include "Adventurer.h"
-
-#include "EnemyEntity.h"
-#include "Profession.h"
-#include "../Controllers/DialogController.h"
+#pragma once
 
 static Adventurer *adventurer = NULL;
-static int potionTime = 0;
-static int lastPotionDamage = 0;
+static int strengthPotionTime = 0;
+static int defencePotionTime = 0;
+static int strengthPotionDamage = 0;
+static int defencePotionDefence = 0;
 
-void setPotionTime(int time) {
-    potionTime = time;
+void setStrengthPotionTime(int time) {
+    strengthPotionTime = time;
 }
 
-int getPotionTime() {
-    return potionTime;
+void setDefencePotionTime(int time) {
+    defencePotionTime = time;
 }
 
-void checkPotionTime() {
-    if (potionTime > 0) {
-        potionTime--;
-    } else if (lastPotionDamage > 0) {
-    } else if (potionTime == 0) {
-        setDamage(getAdventurer()->damage - lastPotionDamage);
-        lastPotionDamage = 0;
+int getStrengthPotionTime() {
+    return strengthPotionTime;
+}
+
+int getDefencePotionTime() {
+    return defencePotionTime;
+}
+
+void checkStrengthPotionTime() {
+    if (strengthPotionTime > 0) {
+        strengthPotionTime--;
+    } else if (strengthPotionDamage > 0) {
+    } else if (strengthPotionTime == 0) {
+        setDamage(getAdventurer()->damage - strengthPotionDamage);
+        strengthPotionDamage = 0;
     }
 }
 
+int checkDefencePotionTime() {
+    if (defencePotionTime > 0) {
+        defencePotionTime--;
+        return defencePotionDefence;
+    }
+    if (defencePotionDefence > 0) {
+    } else if (defencePotionTime == 0) {
+        defencePotionDefence = 0;
+    }
+    return 0;
+}
+
 void setLastPotionDamage(int damage) {
-    lastPotionDamage = damage;
+    strengthPotionDamage = damage;
 }
 
 void setHp(int hp) {
@@ -55,6 +68,8 @@ void setLevel(int level) {
 void setXp(int xp) {
     adventurer->xp = xp;
     adventurer->level += adventurer->xp/100;
+    adventurer->hpMax += adventurer->xp/100*5;
+    adventurer->hp += adventurer->xp/100*5;
     adventurer->xp %= 100;
 }
 
@@ -79,14 +94,14 @@ void attackAdventurer() {
     if (isBlockActive()) {
         return;
     }
-    adventurer->hp-=getEnemyDamage(getMap()->currentRoom);
+    adventurer->hp-=(int)(getEnemyDamage(getMap()->currentRoom)*((getTotalDefense() + checkDefencePotionTime())*1./100));
 }
 
 int getAbilityCount() {
     return adventurer->abilityCount;
 }
 
-void addAbility(Ability *ability) {
+void addAbility(const Ability *ability) {
     if (adventurer->abilities == NULL) {
         adventurer->abilities = malloc(sizeof(Ability));
         adventurer->abilityCount = 1;
@@ -97,6 +112,32 @@ void addAbility(Ability *ability) {
     adventurer->abilityCount = abilitiesCount + 1;
     adventurer->abilities = realloc(adventurer->abilities, sizeof(Ability) * adventurer->abilityCount);
     adventurer->abilities[adventurer->abilityCount - 1] = *ability;
+}
+
+// returns 0 if the ability was used successfully, -1 if error occurred or >0 if its damage
+int useAbility(int index) {
+    if (index < 0 || index >= getAbilityCount()) {
+        return -1;
+    }
+    Ability ability = adventurer->abilities[index];
+    switch (ability) {
+        case FIREBALL:
+            return fireball();
+        case STEAL:
+            steal();
+            return 0;
+        case SMOKE_BOMB:
+            smoke();
+            return 0;
+        case CLONE:
+            clone(true);
+            return 0;
+        case BLOCK:
+            block();
+            return 0;
+        default:
+            return -1;
+    }
 }
 
 void getRewards(int enemyMaxHp) {

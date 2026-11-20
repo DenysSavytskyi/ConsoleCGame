@@ -1,9 +1,11 @@
 #ifndef INVENTORY_SERVICE_H
 #define INVENTORY_SERVICE_H
-#pragma once
-#include "../Modules/Adventurer.h"
-#include <stddef.h>
 #include "../Modules/State.h"
+#include "../Modules/Adventurer.h"
+#include <ncurses.h>
+#include "MapService.h"
+#pragma once
+
 #define INVENTORY_SIZE 10
 
 typedef enum ItemType {
@@ -17,27 +19,32 @@ typedef enum ItemType {
 typedef enum PotionType {
     HEALTH,
     STRENGTH,
+    DEFENCE,
     EXPERIENCE,
 } PotionType;
 
+typedef enum ArmorPart {
+    HELMET,
+    CHESTPLATE,
+    LEGGINGS,
+    BOOTS,
+} ArmorPart;
+
 typedef struct Potion {
-    char name[50];
     PotionType type;
     int amount;
 } Potion;
 
 typedef struct Weapon {
-    char name[50];
     int damage;
 } Weapon;
 
 typedef struct Armor {
-    char name[50];
+    ArmorPart part;
     int defense;
 } Armor;
 
 typedef struct QuestItem {
-    char name[50];
 } QuestItem;
 
 typedef union Item {
@@ -61,9 +68,12 @@ void newInventory();
 void setNewItemAndType(ItemAndType *itemAndType);
 ItemAndType* getNewItemAndType();
 int addItem(ItemAndType *itemAndType); /* returns 1 if ok and 0 if no space */
+void dropItem(int index);
+int getTotalDefense();
+void equip(int index);
 ItemAndType* getItem(int index);
 int getItemCount(ItemType type);
 Potion* getPotion(int index);
-void usePotion(Potion *potion);
+void usePotion(const Potion *potion);
 
 #endif

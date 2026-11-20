@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
 
-# Примусово вказуємо компілятор MSYS2 UCRT64
-set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
-
 project(Game C)
 
 set(CMAKE_C_STANDARD 11)
@@ -50,6 +47,8 @@ add_executable(Game
         Files/Services/Service.c
         Files/Services/Service.h
         Files/Modules/Profession.c
+        Files/Modules/ItemGenerator.c
+        Files/Modules/ItemGenerator.h
 )
 
 target_link_libraries(Game ncursesw)

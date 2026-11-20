@@ -1,11 +1,5 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #include "EnemyEntity.h"
-#include <stddef.h>
-#include <stdlib.h>
-#include "../Services/Service.h"
+#pragma once
 
 static EnemyEntity* enemies = NULL;
 static int enemiesCount = 0;
@@ -88,11 +82,10 @@ int getEnemyDamage(int roomIndex) {
                     return 9;
                 case DEMON:
                     return 20;
-                default:
-                    return 0;
             }
         }
     }
+    return 0;
 }
 
 int attackEnemy(int roomIndex, int damage) {

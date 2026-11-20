@@ -1,8 +1,6 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #include "Ability.h"
+#pragma once
+
 #define MIN_MONEY_FOR_STEAL 10
 #define MAX_MONEY_FOR_STEAL 30
 static int smokeTime = 0;
@@ -11,6 +9,14 @@ static bool isClone = false;
 
 void block() {
     isBlock = true;
+}
+
+int fireball() {
+    return getRandom((getAdventurer()->damage-5 < 0)?0:getAdventurer()->damage-5, getAdventurer()->damage+5);
+}
+
+void steal() {
+    getAdventurer()->money += getRandom(MIN_MONEY_FOR_STEAL, MAX_MONEY_FOR_STEAL);
 }
 
 void smoke() {

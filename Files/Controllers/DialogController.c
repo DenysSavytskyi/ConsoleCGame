@@ -1,11 +1,7 @@
 #include "DialogController.h"
+#pragma once
 
-#include <stdbool.h>
-#include <string.h>
-#include <ncurses.h>
-#include "Controller.h"
-
-int currentLine = 0;
+static int currentLine = 0;
 
 void printTyped(const char *text, int lineOfText, int startX) {
     for (int i = 0; text[i] != '\0'; i++) {
@@ -33,18 +29,6 @@ static WINDOW *createFrame(bool left, int numberOfLines, int *textY, int *textX)
     int width = getFrameWidth(cols);
     int height = numberOfLines + 2;
     int x = left ? 1 : cols - width - 2;
-
-    // if (cols < width * 2 + 3 || height + 2 >= rows) {
-    //     erase();
-    //     mvprintw(0, 0, "Terminal too small. Please enlarge it.");
-    //     refresh();
-    //     waitForInput();
-    //     currentLine = 0;
-    //     erase();
-    // } else if (currentLine + height + 1 >= rows) {
-    //     erase();
-    //     currentLine = 0;
-    // }
 
     WINDOW *frame = newwin(height, width + 1, currentLine, x);
     box(frame, 0, 0);

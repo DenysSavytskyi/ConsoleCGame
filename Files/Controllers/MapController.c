@@ -1,12 +1,5 @@
-//
-// Created by User on 13.10.2026.
-//
-
 #include "MapController.h"
-#include "../Services/Service.h"
-#include <ncurses.h>
-
-#include "Controller.h"
+#pragma once
 
 static int colorForCell(Cell cell) {
     switch (cell) {

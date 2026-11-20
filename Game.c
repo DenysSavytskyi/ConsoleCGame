@@ -1,13 +1,9 @@
-//
-// Created by User on 13.10.2026.
-//
-
 #include <ncurses.h>
 #include <time.h>
 #include "stdlib.h"
 #include "Files/Controllers/Controller.h"
 #include "Files/Modules/State.h"
-#include "Files/Controllers/DialogController.h"
+#include "Files/Controllers/EndController.h"
 #include "Files/Services/BattleService.h"
 #include "Files/Services/DialogService.h"
 #include "Files/Services/EndService.h"
@@ -39,8 +35,7 @@ int main() {
                 currentState = shopService();
                 break;
             default:
-                printw("Unknown error occurred. Exiting the game.\n");
-                refresh();
+                setEndState(UNKNOWN_ERROR);
                 currentState = END_STATE;
         }
     }

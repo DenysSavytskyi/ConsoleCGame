@@ -1,16 +1,10 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #include "Controller.h"
-#include <stdlib.h>
-#include <ncurses.h>
-
 #ifdef _WIN32
     #include <windows.h>
 #else
     #include <unistd.h>
 #endif
+#pragma once
 
 static int cursorX = 1;
 static int cursorY = 1;

@@ -1,9 +1,7 @@
 #include "EndService.h"
-
-#include <ncurses.h>
+#pragma once
 
 State endService() {
-    refresh();
-    getchar();
+    printEnd();
     return END_STATE;
 }

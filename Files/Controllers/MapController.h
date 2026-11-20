@@ -1,13 +1,11 @@
-//
-// Created by User on 13.10.2026.
-//
-
 #ifndef JAC_MAPCONTROLLER_H
 #define JAC_MAPCONTROLLER_H
-#pragma once
+#include "../Services/Service.h"
+#include <ncurses.h>
 #include "../Services/MapService.h"
 #include "../Modules/Adventurer.h"
-#include "MapController.h"
+#include "Controller.h"
+#pragma once
 
 void printMap();
 void printRoom();

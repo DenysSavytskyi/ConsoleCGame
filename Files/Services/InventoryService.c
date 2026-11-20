@@ -1,9 +1,12 @@
-//
-// Created by User on 17.10.2026.
-//
 #include "InventoryService.h"
+#pragma once
 
 static Inventory* inventory = NULL;
+static Weapon weapon;
+static Armor helmet;
+static Armor chestplate;
+static Armor leggings;
+static Armor boots;
 static ItemAndType* newItemAndType = NULL;
 
 State inventoryService() {
@@ -15,6 +18,11 @@ void newInventory() {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         inventory->items[i].type = ITEM_NULL;
     }
+    weapon.damage = 0;
+    helmet.defense = 0;
+    chestplate.defense = 0;
+    leggings.defense = 0;
+    boots.defense = 0;
 }
 
 void setNewItemAndType(ItemAndType* itemAndType) {
@@ -37,6 +45,92 @@ int addItem(ItemAndType* itemAndType) {
         return 1;
     }
     return 0;
+}
+
+void dropItem(int index) {
+    if (index < 0 || index > INVENTORY_SIZE - 1) {
+        return;
+    }
+    if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) != Empty) {
+        return;
+    }
+
+    inventory->items[index].type = ITEM_NULL;
+}
+
+int getTotalDefense() {
+    int totalDefence = 0;
+    if (helmet.defense > 0) {
+        totalDefence += helmet.defense;
+    }
+    if (chestplate.defense > 0) {
+        totalDefence += chestplate.defense;
+    }
+    if (leggings.defense > 0) {
+        totalDefence += leggings.defense;
+    }
+    if (boots.defense > 0) {
+        totalDefence += boots.defense;
+    }
+    return totalDefence;
+}
+
+void equip(int index) {
+    ItemAndType* itemAndType = getItem(index);
+    ItemAndType tempItem;
+    if (itemAndType->type == WEAPON) {
+        if (weapon.damage > 0) {
+            tempItem.type = WEAPON;
+            tempItem.item.weapon = weapon;
+            weapon = itemAndType->item.weapon;
+            addItem(&tempItem);
+        } else {
+            weapon = itemAndType->item.weapon;
+        }
+    } else if (itemAndType->type == ARMOR) {
+        switch (itemAndType->item.armor.part) {
+            case HELMET:
+                if (helmet.defense > 0) {
+                    tempItem.type = ARMOR;
+                    tempItem.item.armor = helmet;
+                    helmet = itemAndType->item.armor;
+                    addItem(&tempItem);
+                } else {
+                    helmet = itemAndType->item.armor;
+                }
+                break;
+            case CHESTPLATE:
+                if (chestplate.defense > 0) {
+                    tempItem.type = ARMOR;
+                    tempItem.item.armor = chestplate;
+                    chestplate = itemAndType->item.armor;
+                    addItem(&tempItem);
+                } else {
+                    chestplate = itemAndType->item.armor;
+                }
+                break;
+            case LEGGINGS:
+                if (leggings.defense > 0) {
+                    tempItem.type = ARMOR;
+                    tempItem.item.armor = leggings;
+                    leggings = itemAndType->item.armor;
+                    addItem(&tempItem);
+                } else {
+                    leggings = itemAndType->item.armor;
+                }
+                break;
+            case BOOTS:
+                if (boots.defense > 0) {
+                    tempItem.type = ARMOR;
+                    tempItem.item.armor = boots;
+                    boots = itemAndType->item.armor;
+                    addItem(&tempItem);
+                } else {
+                    boots = itemAndType->item.armor;
+                }
+                break;
+        }
+    }
 }
 
 ItemAndType* getItem(int index) {
@@ -69,7 +163,7 @@ Potion* getPotion(int index) {
     return NULL;
 }
 
-void usePotion(Potion *potion) {
+void usePotion(const Potion *potion) {
     if (potion == NULL) {
         return;
     }
@@ -82,7 +176,10 @@ void usePotion(Potion *potion) {
             break;
         case STRENGTH:
             setDamage(getAdventurer()->damage + potion->amount);
-            setPotionTime(3);
+            setStrengthPotionTime(3);
+            break;
+        case DEFENCE:
+            setDefencePotionTime(3);
             break;
         case EXPERIENCE:
             setXp(getAdventurer()->xp + potion->amount);

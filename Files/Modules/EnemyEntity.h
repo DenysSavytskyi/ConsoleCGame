@@ -1,12 +1,11 @@
-//
-// Created by User on 17.10.2026.
-//
-
 #ifndef JAC_ENEMY_H
 #define JAC_ENEMY_H
-#include <stdbool.h>
-#include "Ability.h"
+#include <stddef.h>
+#include <stdlib.h>
+#include "Adventurer.h"
+#include "../Services/Service.h"
 #include "../Services/MapService.h"
+#include <stdbool.h>
 #pragma once
 
 typedef enum EnemyType {

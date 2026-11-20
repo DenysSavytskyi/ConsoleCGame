@@ -1,9 +1,13 @@
 #include "MapService.h"
-#include <stdlib.h>
+#pragma once
 
 static int level = 0;
 static Map *map = NULL;
 static RoomType *minimap = NULL;
+static Reward *treasures = NULL;
+static int treasuresCount = 0;
+static ItemAndTypeOnMap *items = NULL;
+static int itemsCount = 0;
 
 static void freeMap() {
     if (!map) return;
@@ -13,9 +17,15 @@ static void freeMap() {
         }
         free(map->rooms[i].roomMap);
     }
+    free(items);
+    free(treasures);
     free(map->rooms);
     free(map->connections);
     free(map);
+    items = NULL;
+    itemsCount = 0;
+    treasures = NULL;
+    treasuresCount = 0;
     map = NULL;
 }
 
@@ -53,6 +63,39 @@ Cell getRoomCell(int roomIndex, int row, int column) {
 
 void setRoomCell(int roomIndex, int row, int column, Cell cell) {
     map->rooms[roomIndex].roomMap[row][column] = cell;
+}
+
+void addItemOnMap(ItemAndType item, int roomIndex, int x, int y) {
+    ItemAndTypeOnMap itemOnMap;
+    itemOnMap.itemAndType = item;
+    itemOnMap.roomIndex = roomIndex;
+    itemOnMap.x = x;
+    itemOnMap.y = y;
+    if (items == NULL) {
+        items = malloc(sizeof(ItemAndTypeOnMap));
+        items[0] = itemOnMap;
+        itemsCount++;
+    } else {
+        items = realloc(items, (itemsCount + 1) * sizeof(ItemAndTypeOnMap));
+        items[itemsCount] = itemOnMap;
+        itemsCount++;
+    }
+}
+
+void addTreasureOnMap(int roomIndex, int x, int y) {
+    Reward treasure;
+    treasure.roomIndex = roomIndex;
+    treasure.x = x;
+    treasure.y = y;
+    if (treasures == NULL) {
+        treasures = malloc(sizeof(Reward));
+        treasures[0] = treasure;
+        treasuresCount++;
+    } else {
+        treasures = realloc(treasures, (treasuresCount + 1) * sizeof(Reward));
+        treasures[treasuresCount] = treasure;
+        treasuresCount++;
+    }
 }
 
 void initRooms(int roomsCount) {
@@ -296,18 +339,26 @@ State mapMove() {
         case 'e':
             switch (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x)) {
                 case Stuff:
-                    //TODO add item to inventory
+                    //TODO add item to inventory (add it or drop it)
                     return INVENTORY_STATE;
                 case Treasure:
+                    ItemAndType itemAndType = generateTreasure();
+                    if (itemAndType.type != ITEM_NULL) {
+                        setNewItemAndType(&itemAndType);//TODO change it to add to inventory or drop on floor
+                    }
                     //TODO add treasure to inventory
                     return INVENTORY_STATE;
                 case Shop:
-                    //TODO enter shop
+                    shopService();
                     return SHOP_STATE;
                 case NPC:
-                    //TODO start dialog
+                    dialogService();
                     return DIALOG_STATE;
                 case Portal:
+                    if (getLevel()==5) {
+                        setEndState(VICTORY);
+                        return END_STATE;
+                    }
                     completeMap();
                     getAdventurer()->hp = getAdventurer()->hpMax;
                     break;
