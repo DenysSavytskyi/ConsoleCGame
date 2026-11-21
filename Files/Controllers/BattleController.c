@@ -6,8 +6,6 @@
 #include "../Services/BattleService.h"
 #include "../Services/MapService.h"
 #include "../Services/InventoryService.h"
-#pragma once
-
 #define INFO_Y 13
 #define INFO_X 27
 #define OPTIONS_Y 13
@@ -27,19 +25,7 @@ char getAndCheckBattleInput() {
     while (1) {
         clearConsole();
         printBattle();
-        int inputsCount = 0;
-        switch (battleState) {
-            case OPTIONS:
-                inputsCount = 4;
-                break;
-            case POTION:
-                inputsCount = getItemCount(POTION);
-                break;
-            case ABILITIES:
-                inputsCount = getAbilityCount();
-                break;
-        }
-        char possibleInputs[inputsCount + 1]; //[0][1]...[n] and terminator n<=9
+        char possibleInputs[10];
         int inputCount = checkPossibleMovesBattle(possibleInputs);
         possibleInputs[inputCount] = '\0';
         mvprintw(OPTIONS_Y + INFO_Y + 1, 0, "Possible moves:\n");

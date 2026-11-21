@@ -1,5 +1,4 @@
 #include "EndController.h"
-#pragma once
 
 static EndState endState = UNKNOWN_ERROR;
 

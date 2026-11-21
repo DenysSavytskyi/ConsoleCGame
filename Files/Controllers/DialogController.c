@@ -1,5 +1,4 @@
 #include "DialogController.h"
-#pragma once
 
 static int currentLine = 0;
 

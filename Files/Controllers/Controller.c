@@ -4,7 +4,6 @@
 #else
     #include <unistd.h>
 #endif
-#pragma once
 
 static int cursorX = 1;
 static int cursorY = 1;

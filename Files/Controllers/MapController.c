@@ -1,7 +1,6 @@
 #include "MapController.h"
 #include "../Services/MapService.h"
 #include "../Modules/Adventurer.h"
-#pragma once
 
 static int colorForCell(Cell cell) {
     switch (cell) {

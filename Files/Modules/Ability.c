@@ -1,6 +1,5 @@
 #include "Ability.h"
 #include "Adventurer.h"
-#pragma once
 
 #define MIN_MONEY_FOR_STEAL 10
 #define MAX_MONEY_FOR_STEAL 30
@@ -46,5 +45,4 @@ bool isSmokeActive() {
 bool isCloneActive() {
     return isClone;
 }
-
 
