@@ -98,7 +98,7 @@ void attackAdventurer() {
     if (isBlockActive()) {
         return;
     }
-    adventurer->hp-=(int)(getEnemyDamage(getMap()->currentRoom)*((getTotalDefense() + checkDefencePotionTime())*1./100));
+    adventurer->hp-=(int)(getEnemyDamage(getMap()->currentRoom)*((100 - getTotalDefense() - checkDefencePotionTime())/100));
 }
 
 int getAbilityCount() {
