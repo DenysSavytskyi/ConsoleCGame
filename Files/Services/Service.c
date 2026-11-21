@@ -1,5 +1,4 @@
 #include "Service.h"
-#pragma once
 
 bool checkInput(const char *possibleInputs, char input) {
     if (possibleInputs == NULL)

@@ -7,8 +7,6 @@
 #include "ShopService.h"
 #include "DialogService.h"
 #include "../Controllers/EndController.h"
-#pragma once
-
 static int level = 0;
 static Map *map = NULL;
 static RoomType *minimap = NULL;
@@ -16,6 +14,15 @@ static Reward *treasures = NULL;
 static int treasuresCount = 0;
 static ItemAndTypeOnMap *items = NULL;
 static int itemsCount = 0;
+
+static bool isInteractable(Cell cell) {
+    return cell == Stuff ||
+           cell == Treasure ||
+           cell == Shop ||
+           cell == NPC ||
+           cell == Portal ||
+           cell == Door;
+}
 
 static void freeMap() {
     if (!map) return;
@@ -112,15 +119,11 @@ void initRooms(int roomsCount) {
     initRoom(roomsCount-1, BossRoom);
     generateEnemy(roomsCount-1, true);
     for (int i = 1; i < roomsCount-1; i++) {
-        int rand = getRandom(0, 6);
-        while (possibleTypes[rand] == NullRoom) {
-            rand = getRandom(0, 6);
-        }
-        initRoom(i, possibleTypes[rand]);
-        if (possibleTypes[rand] == EnemyRoom) {
+        RoomType roomType = possibleTypes[getRandom(0, 6)];
+        initRoom(i, roomType);
+        if (roomType == EnemyRoom) {
             generateEnemy(i, false);
         }
-        possibleTypes[rand] = NullRoom;
     }
     connectRooms(roomsCount);
 }
@@ -389,24 +392,22 @@ State mapMove() {
 
 int checkPossibleMovesMap(char *possibleInputs) {
     int count = 0;
-    if (getAdventurer()->x-1 >= 0 && getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x-1) != Wall) {
+    int x = getAdventurer()->x;
+    int y = getAdventurer()->y;
+    int roomSize = getCurrentRoom()->roomSize;
+    if (x-1 >= 0 && getCurrentRoomCell(y, x-1) != Wall) {
         possibleInputs[count++] = 'a';
     }
-    if (getAdventurer()->y-1 >= 0 && getCurrentRoomCell(getAdventurer()->y-1, getAdventurer()->x) != Wall) {
+    if (y-1 >= 0 && getCurrentRoomCell(y-1, x) != Wall) {
         possibleInputs[count++] = 'w';
     }
-    if (getAdventurer()->x+1 < getCurrentRoom()->roomSize  && getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x+1) != Wall) {
+    if (x+1 < roomSize && getCurrentRoomCell(y, x+1) != Wall) {
         possibleInputs[count++] = 'd';
     }
-    if (getAdventurer()->y+1 < getCurrentRoom()->roomSize && getCurrentRoomCell(getAdventurer()->y+1, getAdventurer()->x) != Wall) {
+    if (y+1 < roomSize && getCurrentRoomCell(y+1, x) != Wall) {
         possibleInputs[count++] = 's';
     }
-    if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Stuff ||
-        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Treasure ||
-        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Shop ||
-        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == NPC ||
-        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Portal ||
-        getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Door) {
+    if (isInteractable(getCurrentRoomCell(y, x))) {
         possibleInputs[count++] = 'e';
     }
     possibleInputs[count++] = 'i';

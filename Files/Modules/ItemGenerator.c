@@ -3,7 +3,6 @@
 #include "ItemGenerator.h"
 #include "Adventurer.h"
 #include "../Services/Service.h"
-#pragma once
 
 ItemAndType generateTreasure() {
     if (getRandom(0,1)) {
@@ -41,4 +40,3 @@ ItemAndType generateQuestItem() {
     itemAndType.type = QUEST_ITEM;
     return itemAndType;
 }
-

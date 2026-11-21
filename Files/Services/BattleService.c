@@ -5,7 +5,6 @@
 #include "../Controllers/EndController.h"
 #include "../Controllers/BattleController.h"
 #include "InventoryService.h"
-#pragma once
 
 State battleService() {
     while (getAdventurer()->hp > 0) {

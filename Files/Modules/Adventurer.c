@@ -3,8 +3,6 @@
 #include "../Services/MapService.h"
 #include "../Services/InventoryService.h"
 #include "../Controllers/DialogController.h"
-#pragma once
-
 static Adventurer *adventurer = NULL;
 static int strengthPotionTime = 0;
 static int defencePotionTime = 0;
@@ -31,7 +29,6 @@ void checkStrengthPotionTime() {
     if (strengthPotionTime > 0) {
         strengthPotionTime--;
     } else if (strengthPotionDamage > 0) {
-    } else if (strengthPotionTime == 0) {
         setDamage(getAdventurer()->damage - strengthPotionDamage);
         strengthPotionDamage = 0;
     }
@@ -42,15 +39,15 @@ int checkDefencePotionTime() {
         defencePotionTime--;
         return defencePotionDefence;
     }
-    if (defencePotionDefence > 0) {
-    } else if (defencePotionTime == 0) {
-        defencePotionDefence = 0;
-    }
     return 0;
 }
 
 void setLastPotionDamage(int damage) {
     strengthPotionDamage = damage;
+}
+
+void setLastPotionDefence(int defence) {
+    defencePotionDefence = defence;
 }
 
 void setHp(int hp) {

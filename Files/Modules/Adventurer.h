@@ -33,6 +33,7 @@ int getDefencePotionTime();
 void checkStrengthPotionTime();
 int checkDefencePotionTime();
 void setLastPotionDamage(int damage);
+void setLastPotionDefence(int defence);
 void setCloneActive(bool active);
 bool getCloneActive();
 void setHp(int hp);

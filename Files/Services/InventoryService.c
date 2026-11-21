@@ -1,8 +1,6 @@
 #include "InventoryService.h"
 #include "../Modules/Adventurer.h"
 #include "MapService.h"
-#pragma once
-
 static Inventory* inventory = NULL;
 static Weapon weapon;
 static Armor helmet;
@@ -178,9 +176,11 @@ void usePotion(const Potion *potion) {
             break;
         case STRENGTH:
             setDamage(getAdventurer()->damage + potion->amount);
+            setLastPotionDamage(potion->amount);
             setStrengthPotionTime(3);
             break;
         case DEFENCE:
+            setLastPotionDefence(potion->amount);
             setDefencePotionTime(3);
             break;
         case EXPERIENCE:
