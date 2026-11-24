@@ -11,6 +11,7 @@ typedef enum BattleState {
     ABILITIES,
     OPTIONS
 } BattleState;
+//TODO delete POTIONS and implement using InventoryService
 
 BattleState getBattleState();
 void setBattleState(BattleState newState);

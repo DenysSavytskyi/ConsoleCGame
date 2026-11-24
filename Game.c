@@ -11,6 +11,7 @@
 #include "Files/Services/MapService.h"
 #include "Files/Services/ShopService.h"
 
+
 int main() {
     sleep_ms(1000);
     initializeController();
@@ -37,6 +38,9 @@ int main() {
             default:
                 setEndState(UNKNOWN_ERROR);
                 currentState = END_STATE;
+        }
+        if (currentState != INVENTORY_STATE) {
+            setPreviousState(currentState);
         }
     }
     endService();

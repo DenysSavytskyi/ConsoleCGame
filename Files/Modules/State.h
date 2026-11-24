@@ -11,4 +11,7 @@ typedef enum GAME_STATES {
     SHOP_STATE
 } State;
 
+void setPreviousState(State state);
+State getPreviousState();
+
 #endif

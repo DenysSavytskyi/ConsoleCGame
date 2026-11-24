@@ -10,6 +10,7 @@ static int cursorY = 1;
 static int maxCursorY = 1;
 
 void initializeController() {
+    sleep_ms(500); //waiting for window resize
     initscr();
     cbreak();
     noecho();

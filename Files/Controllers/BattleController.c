@@ -25,7 +25,7 @@ char getAndCheckBattleInput() {
     while (1) {
         clearConsole();
         printBattle();
-        char possibleInputs[10];
+        char possibleInputs[11];
         int inputCount = checkPossibleMovesBattle(possibleInputs);
         possibleInputs[inputCount] = '\0';
         mvprintw(OPTIONS_Y + INFO_Y + 1, 0, "Possible moves:\n");
@@ -100,7 +100,7 @@ void printBattle() {
                 case STRENGTH:
                     potionType = "Strength";
                     break;
-                case DEFENCE:
+                case DEFENSE:
                     potionType = "Defence";
                     break;
                 case EXPERIENCE:

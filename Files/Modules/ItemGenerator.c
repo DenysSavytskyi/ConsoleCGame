@@ -17,17 +17,29 @@ ItemAndType generateTreasure() {
 
 ItemAndType generateRandomItem() {
     ItemAndType itemAndType;
-    itemAndType.type = (ItemType)getRandom(0, 3);
+    itemAndType.type = (ItemType)getRandom(0, 2);
     switch (itemAndType.type) {
         case POTION:
             itemAndType.item.potion.type = (PotionType)getRandom(0, 2);
-            itemAndType.item.potion.amount = getRandom(10, 30);
+            switch (itemAndType.item.potion.type) {
+                case HEALTH:
+                    itemAndType.item.potion.amount = getRandom(5, 20) * getLevel();
+                    break;
+                case STRENGTH:
+                    itemAndType.item.potion.amount = getRandom(1, 5) * getLevel();
+                    break;
+                case DEFENSE:
+                    itemAndType.item.potion.amount = getRandom(1, 5) * getLevel();
+                    break;
+                case EXPERIENCE:
+                    itemAndType.item.potion.amount = getRandom(5, 20) * getLevel();
+            }
             break;
         case WEAPON:
-            itemAndType.item.weapon.damage = getRandom(1, 10);
+            itemAndType.item.weapon.damage = getRandom(1, 5) * getLevel();
             break;
         case ARMOR:
-            itemAndType.item.armor.defense = getRandom(5, 15);
+            itemAndType.item.armor.defense = getRandom(2, 5) * getLevel();
             break;
         default:
             break;

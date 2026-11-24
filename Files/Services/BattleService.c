@@ -26,7 +26,6 @@ static int calculateDamage() {
 
 State battle() {
     char option = getAndCheckBattleInput();
-    checkStrengthPotionTime();
     if (getBattleState() == OPTIONS) {
         switch (option) {
             case '0':
@@ -37,6 +36,7 @@ State battle() {
                 if (result) {
                     return MAP_STATE;
                 }
+                checkStrengthPotionTime();
                 break;
             case '1':
                 setBattleState(POTIONS);
@@ -46,11 +46,14 @@ State battle() {
                 return BATTLE_STATE;
             case '3':
                 return MAP_STATE;
+            case 'i':
+                return INVENTORY_STATE;
             default:
                 return BATTLE_STATE;
         }
     } else if (getBattleState() == POTIONS) {
-        usePotion(getPotion(option - '0'));
+        usePotion(option - '0');
+        checkStrengthPotionTime();
         setBattleState(OPTIONS);
     } else if (getBattleState() == ABILITIES) {
         int result = useAbility(option - '0');
@@ -66,6 +69,7 @@ State battle() {
                 return MAP_STATE;
             }
         }
+        checkStrengthPotionTime();
         setBattleState(OPTIONS);
     }
     attackAdventurer();
@@ -84,7 +88,7 @@ int checkPossibleMovesBattle(char *possibleInputs) {
         }
     } else {
         possibleInputs[count++] = '0';
-        if (getItemCount(POTION) > 1) {
+        if (getItemCount(POTION) > 0) {
             possibleInputs[count++] = '1';
         }
         possibleInputs[count++] = '2';

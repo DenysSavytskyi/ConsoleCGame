@@ -12,7 +12,7 @@ typedef enum ItemType {
 typedef enum PotionType {
     HEALTH,
     STRENGTH,
-    DEFENCE,
+    DEFENSE,
     EXPERIENCE,
 } PotionType;
 

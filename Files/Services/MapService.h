@@ -66,8 +66,9 @@ Cell getCurrentRoomCell(int row, int column);
 void setCurrentRoomCell(int row, int column, Cell cell);
 Cell getRoomCell(int roomIndex, int row, int column);
 void setRoomCell(int roomIndex, int row, int column, Cell cell);
-void addItemOnMap(ItemAndType item, int roomIndex, int x, int y);
-void addTreasureOnMap(int roomIndex, int x, int y);
+int addItemOnMap(ItemAndType item, int roomIndex, int row, int column); //returns 1 if ok and 0 if no space
+ItemAndType deleteItemFromMap (int roomIndex, int row, int column);
+void addTreasureOnMap(int roomIndex, int row, int column);
 void initRooms(int roomsCount);
 void initRoom(int roomIndex, RoomType type);
 void initMap();

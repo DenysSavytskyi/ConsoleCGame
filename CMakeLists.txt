@@ -58,6 +58,7 @@ add_executable(Game
         Files/Modules/Profession.c
         Files/Modules/ItemGenerator.c
         Files/Modules/ItemGenerator.h
+        Files/Modules/State.c
 )
 
 target_include_directories(Game PRIVATE ${CURSES_INCLUDE_DIR})

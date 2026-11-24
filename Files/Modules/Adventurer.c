@@ -51,10 +51,18 @@ void setLastPotionDefence(int defence) {
 }
 
 void setHp(int hp) {
-    adventurer->hp = hp;
+    if (hp<0) {
+        adventurer->hp = 0;
+        return;
+    }
+    adventurer->hp = hp>adventurer->hpMax?adventurer->hpMax:hp;
 }
 
 void setDamage(int damage) {
+    if (damage<0) {
+        adventurer->damage = 0;
+        return;
+    }
     adventurer->damage = damage;
 }
 
@@ -95,7 +103,14 @@ void attackAdventurer() {
     if (isBlockActive()) {
         return;
     }
-    adventurer->hp-=(int)(getEnemyDamage(getMap()->currentRoom)*((100 - getTotalDefense() - checkDefencePotionTime())/100));
+    int damageReduce = (100 - getTotalDefense() - checkDefencePotionTime());
+    if (damageReduce < 0 ){
+        damageReduce = 0;
+    }
+    if (damageReduce > 100) {
+        damageReduce = 100;
+    }
+    adventurer->hp-=getEnemyDamage(getMap()->currentRoom)*(damageReduce/100);
 }
 
 int getAbilityCount() {

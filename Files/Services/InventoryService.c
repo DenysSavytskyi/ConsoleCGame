@@ -1,16 +1,73 @@
 #include "InventoryService.h"
 #include "../Modules/Adventurer.h"
 #include "MapService.h"
+#include "../Controllers/InventoryController.h"
 static Inventory* inventory = NULL;
 static Weapon weapon;
 static Armor helmet;
 static Armor chestplate;
 static Armor leggings;
 static Armor boots;
-static ItemAndType* newItemAndType = NULL;
 
 State inventoryService() {
-    return END_STATE;
+    char input = getAndCheckInventoryInput();
+    while (input != 'q') {
+        switch (input) {
+            case 'w':
+                setCurrentIndex(getCurrentIndex() - 5);
+                break;
+            case 'a':
+                setCurrentIndex(getCurrentIndex() - 1);
+                break;
+            case 's':
+                setCurrentIndex(getCurrentIndex() + 5);
+                break;
+            case 'd':
+                setCurrentIndex(getCurrentIndex() + 1);
+                break;
+            case 'e':
+                equip(getCurrentIndex());
+                break;
+            case 'f':
+                usePotion(getCurrentIndex());
+                break;
+            case 'x':
+                dropItem(getCurrentIndex());
+                break;
+        }
+        input = getAndCheckInventoryInput();
+    }
+    return getPreviousState();
+}
+
+int checkPossibleMovesInventory(char *possibleInputs) {
+    int count = 0;
+    if (getCurrentIndex()>=5) {
+        possibleInputs[count++] = 'w';
+    }
+    if (getCurrentIndex()%5!=0) {
+        possibleInputs[count++] = 'a';
+    }
+    if (getCurrentIndex()<5) {
+        possibleInputs[count++] = 's';
+    }
+    if (getCurrentIndex()%5!=4) {
+        possibleInputs[count++] = 'd';
+    }
+    if (getItem(getCurrentIndex())->type != ITEM_NULL &&
+        getItem(getCurrentIndex())->type != QUEST_ITEM &&
+        getItem(getCurrentIndex())->type != POTION) {
+        possibleInputs[count++] = 'e';
+    }
+    possibleInputs[count++] = 'q';
+    if (getItem(getCurrentIndex())->type == POTION) {
+        possibleInputs[count++] = 'f';
+    }
+    if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Empty &&
+        getItem(getCurrentIndex())->type != ITEM_NULL) {
+        possibleInputs[count++] = 'x';
+    }
+    return count;
 }
 
 void newInventory() {
@@ -25,24 +82,12 @@ void newInventory() {
     boots.defense = 0;
 }
 
-void setNewItemAndType(ItemAndType* itemAndType) {
-    newItemAndType = itemAndType;
-}
-
-ItemAndType* getNewItemAndType() {
-    return newItemAndType;
-}
-
-int addItem(ItemAndType* itemAndType) {
+int addItem(ItemAndType itemAndType) {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (inventory->items[i].type == ITEM_NULL) {
-            inventory->items[i] = *itemAndType;
+            inventory->items[i] = itemAndType;
             return 1;
         }
-    }
-    if (newItemAndType == NULL || newItemAndType->type == ITEM_NULL) {
-        newItemAndType = itemAndType;
-        return 1;
     }
     return 0;
 }
@@ -54,25 +99,12 @@ void dropItem(int index) {
     if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) != Empty) {
         return;
     }
-
+    addItemOnMap(inventory->items[index], getMap()->currentRoom, getAdventurer()->y, getAdventurer()->x);
     inventory->items[index].type = ITEM_NULL;
 }
 
 int getTotalDefense() {
-    int totalDefence = 0;
-    if (helmet.defense > 0) {
-        totalDefence += helmet.defense;
-    }
-    if (chestplate.defense > 0) {
-        totalDefence += chestplate.defense;
-    }
-    if (leggings.defense > 0) {
-        totalDefence += leggings.defense;
-    }
-    if (boots.defense > 0) {
-        totalDefence += boots.defense;
-    }
-    return totalDefence;
+    return helmet.defense + chestplate.defense + leggings.defense + boots.defense;
 }
 
 void equip(int index) {
@@ -83,7 +115,7 @@ void equip(int index) {
             tempItem.type = WEAPON;
             tempItem.item.weapon = weapon;
             weapon = itemAndType->item.weapon;
-            addItem(&tempItem);
+            addItem(tempItem);
         } else {
             weapon = itemAndType->item.weapon;
         }
@@ -94,7 +126,8 @@ void equip(int index) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = helmet;
                     helmet = itemAndType->item.armor;
-                    addItem(&tempItem);
+                    deleteItem(index);
+                    addItem(tempItem);
                 } else {
                     helmet = itemAndType->item.armor;
                 }
@@ -104,7 +137,8 @@ void equip(int index) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = chestplate;
                     chestplate = itemAndType->item.armor;
-                    addItem(&tempItem);
+                    deleteItem(index);
+                    addItem(tempItem);
                 } else {
                     chestplate = itemAndType->item.armor;
                 }
@@ -114,7 +148,8 @@ void equip(int index) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = leggings;
                     leggings = itemAndType->item.armor;
-                    addItem(&tempItem);
+                    deleteItem(index);
+                    addItem(tempItem);
                 } else {
                     leggings = itemAndType->item.armor;
                 }
@@ -124,7 +159,8 @@ void equip(int index) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = boots;
                     boots = itemAndType->item.armor;
-                    addItem(&tempItem);
+                    deleteItem(index);
+                    addItem(tempItem);
                 } else {
                     boots = itemAndType->item.armor;
                 }
@@ -138,6 +174,13 @@ ItemAndType* getItem(int index) {
         return NULL;
     }
     return &inventory->items[index];
+}
+
+void deleteItem(int index) {
+    if (index < 0 || index > INVENTORY_SIZE - 1) {
+        return;
+    }
+    inventory->items[index].type = ITEM_NULL;
 }
 
 int getItemCount(ItemType type) {
@@ -163,7 +206,8 @@ Potion* getPotion(int index) {
     return NULL;
 }
 
-void usePotion(const Potion *potion) {
+void usePotion(int index) {
+    Potion* potion = getPotion(index);
     if (potion == NULL) {
         return;
     }
@@ -179,14 +223,13 @@ void usePotion(const Potion *potion) {
             setLastPotionDamage(potion->amount);
             setStrengthPotionTime(3);
             break;
-        case DEFENCE:
+        case DEFENSE:
             setLastPotionDefence(potion->amount);
             setDefencePotionTime(3);
             break;
         case EXPERIENCE:
             setXp(getAdventurer()->xp + potion->amount);
             break;
-        default:
-            break;
     }
+    deleteItem(index);
 }

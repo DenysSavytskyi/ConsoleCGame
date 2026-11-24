@@ -80,12 +80,15 @@ void setRoomCell(int roomIndex, int row, int column, Cell cell) {
     map->rooms[roomIndex].roomMap[row][column] = cell;
 }
 
-void addItemOnMap(ItemAndType item, int roomIndex, int x, int y) {
+int addItemOnMap(ItemAndType item, int roomIndex, int row, int column) {
     ItemAndTypeOnMap itemOnMap;
     itemOnMap.itemAndType = item;
     itemOnMap.roomIndex = roomIndex;
-    itemOnMap.x = x;
-    itemOnMap.y = y;
+    itemOnMap.y = row;
+    itemOnMap.x = column;
+    if (getRoom(roomIndex)->roomMap[row][column] != Empty) {
+        return 0;
+    }
     if (items == NULL) {
         items = malloc(sizeof(ItemAndTypeOnMap));
         items[0] = itemOnMap;
@@ -95,13 +98,33 @@ void addItemOnMap(ItemAndType item, int roomIndex, int x, int y) {
         items[itemsCount] = itemOnMap;
         itemsCount++;
     }
+    setRoomCell(roomIndex, row, column, Stuff);
+    return 1;
 }
 
-void addTreasureOnMap(int roomIndex, int x, int y) {
+ItemAndType deleteItemFromMap (int roomIndex, int row, int column) {
+    ItemAndTypeOnMap itemOnMap;
+    itemOnMap.itemAndType.type = ITEM_NULL;
+    for (int i = 0; i < itemsCount; i++) {
+        if (items[i].roomIndex == roomIndex && items[i].x == column && items[i].y == row) {
+            itemOnMap = items[i];
+            for (int j = i; j < itemsCount - 1; j++) {
+                items[j] = items[j + 1];
+            }
+            itemsCount--;
+            items = realloc(items, sizeof(ItemAndTypeOnMap) * itemsCount);
+            setRoomCell(roomIndex, row, column, Empty);
+            return itemOnMap.itemAndType;
+        }
+    }
+    return itemOnMap.itemAndType;
+}
+
+void addTreasureOnMap(int roomIndex, int row, int column) {
     Reward treasure;
     treasure.roomIndex = roomIndex;
-    treasure.x = x;
-    treasure.y = y;
+    treasure.y = row;
+    treasure.x = column;
     if (treasures == NULL) {
         treasures = malloc(sizeof(Reward));
         treasures[0] = treasure;
@@ -111,6 +134,7 @@ void addTreasureOnMap(int roomIndex, int x, int y) {
         treasures[treasuresCount] = treasure;
         treasuresCount++;
     }
+    setRoomCell(roomIndex, row, column, Treasure);
 }
 
 void initRooms(int roomsCount) {
@@ -119,11 +143,16 @@ void initRooms(int roomsCount) {
     initRoom(roomsCount-1, BossRoom);
     generateEnemy(roomsCount-1, true);
     for (int i = 1; i < roomsCount-1; i++) {
-        RoomType roomType = possibleTypes[getRandom(0, 6)];
-        initRoom(i, roomType);
-        if (roomType == EnemyRoom) {
+        int rand = getRandom(0, 6);
+        while (possibleTypes[rand] == NullRoom) {
+            rand = getRandom(0, 6);
+        }
+        RoomType type = possibleTypes[rand];
+        initRoom(i, type);
+        if (type == EnemyRoom) {
             generateEnemy(i, false);
         }
+        possibleTypes[rand] = NullRoom;
     }
     connectRooms(roomsCount);
 }
@@ -192,7 +221,16 @@ void generateMap(int roomIndex, RoomType roomType, int roomSize) {
         setRoomCell(roomIndex, y, x, Wall);
     }
 
-    setRoomCell(roomIndex, getRandom(2, roomSize-3), getRandom(2, roomSize-3), element);
+    int x = getRandom(2, roomSize-3);
+    int y = getRandom(2, roomSize-3);
+    setRoomCell(roomIndex, y, x, element);
+    if (roomType == TreasureRoom) {
+        addTreasureOnMap(roomIndex, y, x);
+    } else if (roomType == ShopRoom) {
+        //TODO generateShop(roomIndex, y, x);
+    } else if (roomType == NPCRoom) {
+        //TODO generateNPC(roomIndex, y, x);
+    }
 }
 
 void setDoors(int firstRoom, int secondRoom) {
@@ -349,16 +387,24 @@ State mapMove() {
             break;
         case 'e':
             switch (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x)) {
+                ItemAndType itemAndType;
                 case Stuff:
-                    //TODO add item to inventory (add it or drop it)
-                    return INVENTORY_STATE;
-                case Treasure:
-                    ItemAndType itemAndType = generateTreasure();
+                    itemAndType = deleteItemFromMap(getMap()->currentRoom, getAdventurer()->y, getAdventurer()->x);
                     if (itemAndType.type != ITEM_NULL) {
-                        setNewItemAndType(&itemAndType);//TODO change it to add to inventory or drop on floor
+                        if (!addItem(itemAndType)) {
+                            addItemOnMap(itemAndType, getMap()->currentRoom, getAdventurer()->y, getAdventurer()->x);
+                        }
                     }
-                    //TODO add treasure to inventory
-                    return INVENTORY_STATE;
+                    return MAP_STATE;
+                case Treasure:
+                    itemAndType = generateTreasure();
+                    setCurrentRoomCell(getAdventurer()->y, getAdventurer()->x, Empty);
+                    if (itemAndType.type != ITEM_NULL) {
+                        if (!addItem(itemAndType)) {
+                            addItemOnMap(itemAndType, getMap()->currentRoom, getAdventurer()->y, getAdventurer()->x);
+                        }
+                    }
+                    return MAP_STATE;
                 case Shop:
                     shopService();
                     return SHOP_STATE;
@@ -419,8 +465,9 @@ void removeEnemyFromMap(bool isBoss) {
         setCurrentRoomCell(getAdventurer()->y, getAdventurer()->x, Portal);
         return;
     }
-    //TODO make random chance to drop item and replace enemy with item
     setCurrentRoomCell(getAdventurer()->y, getAdventurer()->x, Empty);
+    if (getRandom(0, 1))
+        addTreasureOnMap(getMap()->currentRoom, getAdventurer()->y, getAdventurer()->x);
 }
 
 void completeMap() {
