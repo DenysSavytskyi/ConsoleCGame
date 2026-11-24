@@ -82,33 +82,9 @@ void printBattle() {
     int lineCount = 1;
     if (battleState == OPTIONS) {
         mvwprintw(optionsWin, lineCount++, 1, "Options: ");
-        mvwprintw(optionsWin, lineCount++, 1, "0. Attack");
-        if (getItemCount(POTION) > 0) {
-            mvwprintw(optionsWin, lineCount++, 1, "1. Potions");
-        }
+        mvwprintw(optionsWin, lineCount++, 1, "1. Attack");
         mvwprintw(optionsWin, lineCount++, 1, "2. Abilities");
         mvwprintw(optionsWin, lineCount++, 1, "3. Run Away");
-    } else if (battleState == POTIONS) {
-        mvwprintw(optionsWin, lineCount++, 1, "Potions: ");
-        for (int i = 0; i < getItemCount(POTION); i++) {
-            Potion *potion = getPotion(i);
-            char* potionType = "UNKNOWN";
-            switch (potion->type) {
-                case HEALTH:
-                    potionType = "Health";
-                    break;
-                case STRENGTH:
-                    potionType = "Strength";
-                    break;
-                case DEFENSE:
-                    potionType = "Defence";
-                    break;
-                case EXPERIENCE:
-                    potionType = "Experience";
-                    break;
-            }
-            mvwprintw(optionsWin, lineCount++, 1, "%d. %s (%d)", i, potionType, potion->amount);
-        }
     } else if (battleState == ABILITIES) {
         mvwprintw(optionsWin, lineCount++, 1, "Abilities: ");
         for (int i = 0; i < getAbilityCount(); i++) {
@@ -131,7 +107,7 @@ void printBattle() {
                     abilityName = "Clone";
                     break;
             }
-            mvwprintw(optionsWin, lineCount++, 1, "%d. %s", i, abilityName);
+            mvwprintw(optionsWin, lineCount++, 1, "%d. %s", i+1, abilityName);
         }
     }
     wrefresh(optionsWin);

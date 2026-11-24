@@ -28,7 +28,7 @@ State battle() {
     char option = getAndCheckBattleInput();
     if (getBattleState() == OPTIONS) {
         switch (option) {
-            case '0':
+            case '1':
                 int result = attackEnemy(getMap()->currentRoom, calculateDamage());
                 if (result == -1) {
                     return END_STATE;
@@ -38,9 +38,6 @@ State battle() {
                 }
                 checkStrengthPotionTime();
                 break;
-            case '1':
-                setBattleState(POTIONS);
-                return BATTLE_STATE;
             case '2':
                 setBattleState(ABILITIES);
                 return BATTLE_STATE;
@@ -51,12 +48,8 @@ State battle() {
             default:
                 return BATTLE_STATE;
         }
-    } else if (getBattleState() == POTIONS) {
-        usePotion(option - '0');
-        checkStrengthPotionTime();
-        setBattleState(OPTIONS);
     } else if (getBattleState() == ABILITIES) {
-        int result = useAbility(option - '0');
+        int result = useAbility(option - '1');
         if (result == -1) {
             return END_STATE;
         }
@@ -78,19 +71,12 @@ State battle() {
 
 int checkPossibleMovesBattle(char *possibleInputs) {
     int count = 0;
-    if (getBattleState() == POTIONS) {
-        for (int i = 0; i<getItemCount(POTION); i++) {
-            possibleInputs[count++] = (char)((int)'0'+ i);
-        }
-    } else if (getBattleState() == ABILITIES) {
+    if (getBattleState() == ABILITIES) {
         for (int i = 0; i<getAbilityCount(); i++) {
-            possibleInputs[count++] = (char)((int)'0' + i);
+            possibleInputs[count++] = (char)((int)'1' + i);
         }
     } else {
-        possibleInputs[count++] = '0';
-        if (getItemCount(POTION) > 0) {
-            possibleInputs[count++] = '1';
-        }
+        possibleInputs[count++] = '1';
         possibleInputs[count++] = '2';
         possibleInputs[count++] = '3';
     }
