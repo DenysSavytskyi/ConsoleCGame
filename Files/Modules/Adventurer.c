@@ -103,14 +103,14 @@ void attackAdventurer() {
     if (isBlockActive()) {
         return;
     }
-    int damageReduce = (100 - getTotalDefense() - checkDefencePotionTime());
-    if (damageReduce < 0 ){
-        damageReduce = 0;
+    int damageMultiplier = 100 - getTotalDefense() - checkDefencePotionTime();
+    if (damageMultiplier < 0 ){
+        damageMultiplier = 0;
     }
-    if (damageReduce > 100) {
-        damageReduce = 100;
+    if (damageMultiplier > 100) {
+        damageMultiplier = 100;
     }
-    adventurer->hp-=getEnemyDamage(getMap()->currentRoom)*(damageReduce/100);
+    adventurer->hp-=(int)(getEnemyDamage(getMap()->currentRoom)*(damageMultiplier*1./100));
 }
 
 int getAbilityCount() {
@@ -157,8 +157,8 @@ int useAbility(int index) {
 }
 
 void getRewards(int enemyMaxHp) {
-    int moneyReward = getRandom(enemyMaxHp-10, enemyMaxHp);
-    int xpReward = getRandom(enemyMaxHp-10, enemyMaxHp);
+    int moneyReward = getRandom((int)(enemyMaxHp*1./10), (int)(enemyMaxHp*1./5));
+    int xpReward = getRandom((int)(enemyMaxHp*1./5), (int)(enemyMaxHp*1./3));
     setMoney(getAdventurer()->money + moneyReward);
     setXp(getAdventurer()->xp + xpReward);
 }
@@ -202,7 +202,7 @@ Adventurer* createAdventurer() {
             case '2':
                 return newAdventurer(name, MAGE, FIREBALL, 70, 7, 0, 50, 0, 0);
             case '3':
-                return newAdventurer(name, THIEF, STEAL, 80, 8, 100, 0, 0, 0);
+                return newAdventurer(name, THIEF, STEAL, 80, 8, 20, 0, 0, 0);
             case '4':
                 return newAdventurer(name, BARD, SMOKE_BOMB, 90, 6, 0, 0, 0, 0);
             case '5':

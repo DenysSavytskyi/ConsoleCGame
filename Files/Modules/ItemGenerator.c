@@ -1,5 +1,5 @@
-#define MIN_MONEY 30
-#define MAX_MONEY 50
+#define MIN_MONEY 3
+#define MAX_MONEY 5
 #include "ItemGenerator.h"
 #include "Adventurer.h"
 #include "../Services/Service.h"
@@ -39,6 +39,21 @@ ItemAndType generateRandomItem() {
             itemAndType.item.weapon.damage = getRandom(1, 5) * getLevel();
             break;
         case ARMOR:
+            ArmorPart armorPart = (ArmorPart)getRandom(0, 3);
+            switch (armorPart) {
+                case HELMET:
+                    itemAndType.item.armor.part = HELMET;
+                    break;
+                case CHESTPLATE:
+                    itemAndType.item.armor.part = CHESTPLATE;
+                    break;
+                case LEGGINGS:
+                    itemAndType.item.armor.part = LEGGINGS;
+                    break;
+                case BOOTS:
+                    itemAndType.item.armor.part = BOOTS;
+                    break;
+            }
             itemAndType.item.armor.defense = getRandom(2, 5) * getLevel();
             break;
         default:

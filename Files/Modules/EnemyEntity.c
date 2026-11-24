@@ -11,47 +11,45 @@ void generateEnemy(int roomIndex, bool isBoss) {
     } else {
         enemies = realloc(enemies, sizeof(EnemyEntity) * (enemiesCount + 1));
     }
+    int hp = 1;
     switch ((EnemyType)getRandom(0,7)) {
         case GOBLIN:
             enemies[enemiesCount].type = GOBLIN;
-            enemies[enemiesCount].hp = 20;
+            hp = 20;
             break;
         case ORC:
             enemies[enemiesCount].type = ORC;
-            enemies[enemiesCount].hp = 25;
+            hp = 25;
             break;
         case TROLL:
             enemies[enemiesCount].type = TROLL;
-            enemies[enemiesCount].hp = 30;
+            hp = 30;
             break;
         case SKELETON:
             enemies[enemiesCount].type = SKELETON;
-            enemies[enemiesCount].hp = 15;
+            hp = 15;
             break;
         case ZOMBIE:
             enemies[enemiesCount].type = ZOMBIE;
-            enemies[enemiesCount].hp = 20;
+            hp = 20;
             break;
         case VAMPIRE:
             enemies[enemiesCount].type = VAMPIRE;
-            enemies[enemiesCount].hp = 25;
+            hp = 25;
             break;
         case WITCH:
             enemies[enemiesCount].type = WITCH;
-            enemies[enemiesCount].hp = 30;
+            hp = 30;
             break;
         case DEMON:
             enemies[enemiesCount].type = DEMON;
-            enemies[enemiesCount].hp = 40;
+            hp = 40;
             break;
     }
-    enemies[enemiesCount].maxHp = enemies[enemiesCount].hp;
+    int bossHp = isBoss*getLevel()*2*hp;
+    enemies[enemiesCount].hp = (bossHp!=0)?bossHp:hp * getLevel();
     enemies[enemiesCount].isBoss = isBoss;
-    int bossHp = isBoss*getLevel()*enemies[enemiesCount].hp;
-    if (bossHp != 0) {
-        enemies[enemiesCount].hp = bossHp;
-        enemies[enemiesCount].maxHp = bossHp;
-    }
+    enemies[enemiesCount].maxHp = enemies[enemiesCount].hp;
     enemies[enemiesCount].roomIndex = roomIndex;
     enemiesCount++;
 }

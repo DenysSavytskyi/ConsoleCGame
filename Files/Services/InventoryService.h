@@ -16,6 +16,7 @@ void newInventory();
 int addItem(ItemAndType itemAndType); /* returns 1 if ok and 0 if no space */
 void dropItem(int index);
 int getTotalDefense();
+int getWeaponDamage();
 void equip(int index);
 ItemAndType* getItem(int index);
 void deleteItem(int index);

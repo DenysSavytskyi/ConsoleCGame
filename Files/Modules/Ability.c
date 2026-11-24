@@ -1,8 +1,8 @@
 #include "Ability.h"
 #include "Adventurer.h"
 
-#define MIN_MONEY_FOR_STEAL 10
-#define MAX_MONEY_FOR_STEAL 30
+#define MIN_MONEY_FOR_STEAL 2
+#define MAX_MONEY_FOR_STEAL 4
 static int smokeTime = 0;
 static bool isBlock = false;
 static bool isClone = false;
@@ -28,7 +28,11 @@ void clone(bool isActive) {
 }
 
 bool isBlockActive() {
-    return isBlock;
+    if (isBlock) {
+        isBlock = false;
+        return true;
+    }
+    return false;
 }
 
 bool isSmokeActive() {

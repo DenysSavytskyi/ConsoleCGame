@@ -11,7 +11,7 @@ static Armor boots;
 
 State inventoryService() {
     char input = getAndCheckInventoryInput();
-    while (input != 'q') {
+    while (input != 'x') {
         switch (input) {
             case 'w':
                 setCurrentIndex(getCurrentIndex() - 5);
@@ -26,12 +26,12 @@ State inventoryService() {
                 setCurrentIndex(getCurrentIndex() + 1);
                 break;
             case 'e':
-                equip(getCurrentIndex());
+                if (getItem(getCurrentIndex())->type == POTION)
+                    usePotion(getCurrentIndex());
+                else
+                    equip(getCurrentIndex());
                 break;
-            case 'f':
-                usePotion(getCurrentIndex());
-                break;
-            case 'x':
+            case 'q':
                 dropItem(getCurrentIndex());
                 break;
         }
@@ -55,17 +55,13 @@ int checkPossibleMovesInventory(char *possibleInputs) {
         possibleInputs[count++] = 'd';
     }
     if (getItem(getCurrentIndex())->type != ITEM_NULL &&
-        getItem(getCurrentIndex())->type != QUEST_ITEM &&
-        getItem(getCurrentIndex())->type != POTION) {
+        getItem(getCurrentIndex())->type != QUEST_ITEM) {
         possibleInputs[count++] = 'e';
     }
-    possibleInputs[count++] = 'q';
-    if (getItem(getCurrentIndex())->type == POTION) {
-        possibleInputs[count++] = 'f';
-    }
+    possibleInputs[count++] = 'x';
     if (getCurrentRoomCell(getAdventurer()->y, getAdventurer()->x) == Empty &&
         getItem(getCurrentIndex())->type != ITEM_NULL) {
-        possibleInputs[count++] = 'x';
+        possibleInputs[count++] = 'q';
     }
     return count;
 }
@@ -107,6 +103,10 @@ int getTotalDefense() {
     return helmet.defense + chestplate.defense + leggings.defense + boots.defense;
 }
 
+int getWeaponDamage() {
+    return weapon.damage;
+}
+
 void equip(int index) {
     ItemAndType* itemAndType = getItem(index);
     ItemAndType tempItem;
@@ -119,6 +119,7 @@ void equip(int index) {
         } else {
             weapon = itemAndType->item.weapon;
         }
+        deleteItem(index);
     } else if (itemAndType->type == ARMOR) {
         switch (itemAndType->item.armor.part) {
             case HELMET:
@@ -126,44 +127,44 @@ void equip(int index) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = helmet;
                     helmet = itemAndType->item.armor;
-                    deleteItem(index);
                     addItem(tempItem);
                 } else {
                     helmet = itemAndType->item.armor;
                 }
+                deleteItem(index);
                 break;
             case CHESTPLATE:
                 if (chestplate.defense > 0) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = chestplate;
                     chestplate = itemAndType->item.armor;
-                    deleteItem(index);
                     addItem(tempItem);
                 } else {
                     chestplate = itemAndType->item.armor;
                 }
+                deleteItem(index);
                 break;
             case LEGGINGS:
                 if (leggings.defense > 0) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = leggings;
                     leggings = itemAndType->item.armor;
-                    deleteItem(index);
                     addItem(tempItem);
                 } else {
                     leggings = itemAndType->item.armor;
                 }
+                deleteItem(index);
                 break;
             case BOOTS:
                 if (boots.defense > 0) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = boots;
                     boots = itemAndType->item.armor;
-                    deleteItem(index);
                     addItem(tempItem);
                 } else {
                     boots = itemAndType->item.armor;
                 }
+                deleteItem(index);
                 break;
         }
     }

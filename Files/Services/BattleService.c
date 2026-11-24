@@ -18,10 +18,11 @@ State battleService() {
 }
 
 static int calculateDamage() {
+    int totalDamage = getAdventurer()->damage + getWeaponDamage();
     if (isCloneActive()) {
-        return (int)(getAdventurer()->damage * 1.5);
+        return (int)(totalDamage * 1.5);
     }
-    return getAdventurer()->damage;
+    return totalDamage;
 }
 
 State battle() {

@@ -100,14 +100,24 @@ void waitForInput() {
 }
 
 void printHorizontalLine(WINDOW *win, int y) {
+    printLeftAndRightTees(win, y);
+    printOnlyHorizontalLine(win, y);
+}
+
+void printLeftAndRightTees(WINDOW *win, int y) {
     int height, width;
     getmaxyx(win, height, width);
 
-    for (int x = 0; x < width; x++) {
-        mvwaddch(win, y, x, ACS_HLINE);
-    }
     mvwaddch(win, y, 0, ACS_LTEE);
     mvwaddch(win, y, width - 1, ACS_RTEE);
+}
+void printOnlyHorizontalLine(WINDOW *win, int y) {
+    int height, width;
+    getmaxyx(win, height, width);
+
+    for (int x = 1; x < width-1; x++) {
+        mvwaddch(win, y, x, ACS_HLINE);
+    }
 }
 
 void printVerticalLine(WINDOW *win, int x) {
