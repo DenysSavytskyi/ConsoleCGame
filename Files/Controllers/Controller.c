@@ -99,13 +99,15 @@ void waitForInput() {
     getch();
 }
 
-void printHorisontalLine(WINDOW *win, int y) {
+void printHorizontalLine(WINDOW *win, int y) {
     int height, width;
     getmaxyx(win, height, width);
 
     for (int x = 0; x < width; x++) {
         mvwaddch(win, y, x, ACS_HLINE);
     }
+    mvwaddch(win, y, 0, ACS_LTEE);
+    mvwaddch(win, y, width - 1, ACS_RTEE);
 }
 
 void printVerticalLine(WINDOW *win, int x) {
@@ -115,6 +117,8 @@ void printVerticalLine(WINDOW *win, int x) {
     for (int y = 0; y < height; y++) {
         mvwaddch(win, y, x, ACS_VLINE);
     }
+    mvwaddch(win, 0, x, ACS_TTEE);
+    mvwaddch(win, height - 1, x, ACS_BTEE);
 }
 
 void printCross(WINDOW *win, int y, int x) {
@@ -122,10 +126,6 @@ void printCross(WINDOW *win, int y, int x) {
     getmaxyx(win, height, width);
 
     printVerticalLine(win, x);
-    printHorisontalLine(win, y);
+    printHorizontalLine(win, y);
     mvwaddch(win, y, x, ACS_PLUS);
-    mvwaddch(win, 0, x, ACS_TTEE);
-    mvwaddch(win, height - 1, x, ACS_BTEE);
-    mvwaddch(win, y, 0, ACS_LTEE);
-    mvwaddch(win, y, width - 1, ACS_RTEE);
 }

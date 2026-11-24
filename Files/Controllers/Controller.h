@@ -17,7 +17,7 @@ void putChar(char c);
 void putDelayedChar(char c, int charDelay);
 void initializeController();
 void waitForInput();
-void printHorisontalLine(WINDOW *win, int y);
+void printHorizontalLine(WINDOW *win, int y);
 void printVerticalLine(WINDOW *win, int x);
 void printCross(WINDOW *win, int y, int x);
 
