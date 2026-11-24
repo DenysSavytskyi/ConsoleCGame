@@ -89,15 +89,8 @@ int addItemOnMap(ItemAndType item, int roomIndex, int row, int column) {
     if (getRoom(roomIndex)->roomMap[row][column] != Empty) {
         return 0;
     }
-    if (items == NULL) {
-        items = malloc(sizeof(ItemAndTypeOnMap));
-        items[0] = itemOnMap;
-        itemsCount++;
-    } else {
-        items = realloc(items, (itemsCount + 1) * sizeof(ItemAndTypeOnMap));
-        items[itemsCount] = itemOnMap;
-        itemsCount++;
-    }
+    items = realloc(items, (itemsCount + 1) * sizeof(*items));
+    items[itemsCount++] = itemOnMap;
     setRoomCell(roomIndex, row, column, Stuff);
     return 1;
 }
@@ -125,15 +118,8 @@ void addTreasureOnMap(int roomIndex, int row, int column) {
     treasure.roomIndex = roomIndex;
     treasure.y = row;
     treasure.x = column;
-    if (treasures == NULL) {
-        treasures = malloc(sizeof(Reward));
-        treasures[0] = treasure;
-        treasuresCount++;
-    } else {
-        treasures = realloc(treasures, (treasuresCount + 1) * sizeof(Reward));
-        treasures[treasuresCount] = treasure;
-        treasuresCount++;
-    }
+    treasures = realloc(treasures, (treasuresCount + 1) * sizeof(*treasures));
+    treasures[treasuresCount++] = treasure;
     setRoomCell(roomIndex, row, column, Treasure);
 }
 

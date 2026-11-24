@@ -24,7 +24,7 @@ void smoke() {
 }
 
 void clone(bool isActive) {
-    isClone = false;
+    isClone = isActive;
 }
 
 bool isBlockActive() {
@@ -49,4 +49,3 @@ bool isSmokeActive() {
 bool isCloneActive() {
     return isClone;
 }
-

@@ -28,7 +28,8 @@ int getDefencePotionTime() {
 void checkStrengthPotionTime() {
     if (strengthPotionTime > 0) {
         strengthPotionTime--;
-    } else if (strengthPotionDamage > 0) {
+    }
+    if (strengthPotionTime == 0 && strengthPotionDamage > 0) {
         setDamage(getAdventurer()->damage - strengthPotionDamage);
         strengthPotionDamage = 0;
     }
@@ -44,6 +45,10 @@ int checkDefencePotionTime() {
 
 void setLastPotionDamage(int damage) {
     strengthPotionDamage = damage;
+}
+
+int getLastPotionDamage() {
+    return strengthPotionDamage;
 }
 
 void setLastPotionDefence(int defence) {
@@ -118,14 +123,7 @@ int getAbilityCount() {
 }
 
 void addAbility(const Ability *ability) {
-    if (adventurer->abilities == NULL) {
-        adventurer->abilities = malloc(sizeof(Ability));
-        adventurer->abilityCount = 1;
-        adventurer->abilities[0] = *ability;
-        return;
-    }
-    int abilitiesCount = getAbilityCount();
-    adventurer->abilityCount = abilitiesCount + 1;
+    adventurer->abilityCount++;
     adventurer->abilities = realloc(adventurer->abilities, sizeof(Ability) * adventurer->abilityCount);
     adventurer->abilities[adventurer->abilityCount - 1] = *ability;
 }
@@ -175,6 +173,7 @@ Adventurer* newAdventurer(char *name, Profession profession, Ability ability, in
     adventurer->profession = profession;
     newInventory();
     adventurer->abilities = NULL;
+    adventurer->abilityCount = 0;
     addAbility(&ability);
     adventurer->hpMax = hpMax;
     adventurer->hp = hpMax;
@@ -192,7 +191,13 @@ Adventurer* createAdventurer() {
     printLeft("Welcome to the world of adventure!", 1);
     printLeft("What's your name stranger?", 1);
     printRightInput("I... My name is... ", name, sizeof(name), 1);
+    bool showProfessionError = false;
     while (true){
+        if (showProfessionError) {
+            resetDialog();
+            printLeft("It seems like there is no such profession.", 1);
+            showProfessionError = false;
+        }
         printLeft("And what's your profession?\n1. Fighter\n2. Mage\n3. Thief\n4. Bard\n5. Cleric\n", 6);
         char professionChoice[4];
         printRightInput("I'm a... ", professionChoice, sizeof(professionChoice), 1);
@@ -208,7 +213,7 @@ Adventurer* createAdventurer() {
             case '5':
                 return newAdventurer(name, CLERIC, CLONE, 110, 9, 0, 0, 0, 0);
             default:
-                printLeft("It seems like there is no such profession.", 1);
+                showProfessionError = true;
         }
     }
 
