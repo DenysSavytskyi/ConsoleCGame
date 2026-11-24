@@ -38,13 +38,6 @@ static int colorForRoom(RoomType roomType) {
 
 void printRoom() {
     int roomSize = getCurrentRoom()->roomSize;
-    //int terminalRows, terminalCols;
-    //getmaxyx(stdscr, terminalRows, terminalCols);
-    // if (terminalRows < roomSize + 4 || terminalCols < roomSize + 16) {
-    //     mvprintw(0, 0, "Terminal too small. Please enlarge it.");
-    //     refresh();
-    //     return;
-    // }
 
     WINDOW *roomWindow = newwin(roomSize, roomSize, 0, 0);
     for (int y = 0; y < roomSize; y++) {
@@ -74,13 +67,6 @@ void printMap() {
 void printMinimap() {
     int roomSize = getCurrentRoom()->roomSize;
     int startX = roomSize + 4;
-    int terminalRows, terminalCols;
-    getmaxyx(stdscr, terminalRows, terminalCols);
-    // if (terminalRows < 9 || terminalCols < startX + 12) {
-    //     mvprintw(0, 0, "Terminal too small. Please enlarge it.");
-    //     refresh();
-    //     return;
-    // }
     WINDOW *minimapWindow = newwin(7, 9, 0, startX);
     box(minimapWindow, 0, 0);
     mvwprintw(minimapWindow, 0, 1, "Minimap");
@@ -110,7 +96,7 @@ char getAndCheckMapInput() {
         clearConsole();
         printMap();
 
-        char possibleInputs[6]; //[w][a][s][d] [i] and terminator
+        char possibleInputs[7]; //[w][a][s][d] [e] to interact, [i], and terminator
         int inputCount = checkPossibleMovesMap(possibleInputs);
         possibleInputs[inputCount] = '\0';
         int statusY = getCurrentRoom()->roomSize + 3;

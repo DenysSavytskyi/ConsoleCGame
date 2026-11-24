@@ -20,7 +20,7 @@ ItemAndType generateRandomItem() {
     itemAndType.type = (ItemType)getRandom(0, 2);
     switch (itemAndType.type) {
         case POTION:
-            itemAndType.item.potion.type = (PotionType)getRandom(0, 2);
+            itemAndType.item.potion.type = (PotionType)getRandom(HEALTH, EXPERIENCE);
             switch (itemAndType.item.potion.type) {
                 case HEALTH:
                     itemAndType.item.potion.amount = getRandom(5, 20) * getLevel();

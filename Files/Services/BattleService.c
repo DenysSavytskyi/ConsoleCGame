@@ -34,15 +34,17 @@ State battle() {
                 if (result == -1) {
                     return END_STATE;
                 }
+                checkStrengthPotionTime();
                 if (result) {
+                    setBattleState(OPTIONS);
                     return MAP_STATE;
                 }
-                checkStrengthPotionTime();
                 break;
             case '2':
                 setBattleState(ABILITIES);
                 return BATTLE_STATE;
             case '3':
+                setBattleState(OPTIONS);
                 return MAP_STATE;
             case 'i':
                 return INVENTORY_STATE;
@@ -50,6 +52,9 @@ State battle() {
                 return BATTLE_STATE;
         }
     } else if (getBattleState() == ABILITIES) {
+        if (option == 'i') {
+            return INVENTORY_STATE;
+        }
         int result = useAbility(option - '1');
         if (result == -1) {
             return END_STATE;
@@ -59,11 +64,12 @@ State battle() {
             if (result == -1) {
                 return END_STATE;
             }
-            if (result) {
-                return MAP_STATE;
-            }
         }
         checkStrengthPotionTime();
+        if (result > 0) {
+            setBattleState(OPTIONS);
+            return MAP_STATE;
+        }
         setBattleState(OPTIONS);
     }
     attackAdventurer();

@@ -6,11 +6,7 @@ static EnemyEntity* enemies = NULL;
 static int enemiesCount = 0;
 
 void generateEnemy(int roomIndex, bool isBoss) {
-    if (enemies == NULL) {
-        enemies = malloc(sizeof(EnemyEntity));
-    } else {
-        enemies = realloc(enemies, sizeof(EnemyEntity) * (enemiesCount + 1));
-    }
+    enemies = realloc(enemies, sizeof(*enemies) * (enemiesCount + 1));
     int hp = 1;
     switch ((EnemyType)getRandom(0,7)) {
         case GOBLIN:

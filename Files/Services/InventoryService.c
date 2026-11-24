@@ -115,11 +115,11 @@ void equip(int index) {
             tempItem.type = WEAPON;
             tempItem.item.weapon = weapon;
             weapon = itemAndType->item.weapon;
-            addItem(tempItem);
+            *itemAndType = tempItem;
         } else {
             weapon = itemAndType->item.weapon;
+            deleteItem(index);
         }
-        deleteItem(index);
     } else if (itemAndType->type == ARMOR) {
         switch (itemAndType->item.armor.part) {
             case HELMET:
@@ -127,44 +127,44 @@ void equip(int index) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = helmet;
                     helmet = itemAndType->item.armor;
-                    addItem(tempItem);
+                    *itemAndType = tempItem;
                 } else {
                     helmet = itemAndType->item.armor;
+                    deleteItem(index);
                 }
-                deleteItem(index);
                 break;
             case CHESTPLATE:
                 if (chestplate.defense > 0) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = chestplate;
                     chestplate = itemAndType->item.armor;
-                    addItem(tempItem);
+                    *itemAndType = tempItem;
                 } else {
                     chestplate = itemAndType->item.armor;
+                    deleteItem(index);
                 }
-                deleteItem(index);
                 break;
             case LEGGINGS:
                 if (leggings.defense > 0) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = leggings;
                     leggings = itemAndType->item.armor;
-                    addItem(tempItem);
+                    *itemAndType = tempItem;
                 } else {
                     leggings = itemAndType->item.armor;
+                    deleteItem(index);
                 }
-                deleteItem(index);
                 break;
             case BOOTS:
                 if (boots.defense > 0) {
                     tempItem.type = ARMOR;
                     tempItem.item.armor = boots;
                     boots = itemAndType->item.armor;
-                    addItem(tempItem);
+                    *itemAndType = tempItem;
                 } else {
                     boots = itemAndType->item.armor;
+                    deleteItem(index);
                 }
-                deleteItem(index);
                 break;
         }
     }
@@ -195,16 +195,10 @@ int getItemCount(ItemType type) {
 }
 
 Potion* getPotion(int index) {
-    int count = 0;
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
-        if (getItem(i)->type == POTION) {
-            if (index == count) {
-                return &getItem(i)->item.potion;
-            }
-            count++;
-        }
-    }
-    return NULL;
+    ItemAndType *itemAndType = getItem(index);
+    return itemAndType != NULL && itemAndType->type == POTION
+        ? &itemAndType->item.potion
+        : NULL;
 }
 
 void usePotion(int index) {
@@ -220,6 +214,9 @@ void usePotion(int index) {
             }
             break;
         case STRENGTH:
+            if (getLastPotionDamage() > 0) {
+                setDamage(getAdventurer()->damage - getLastPotionDamage());
+            }
             setDamage(getAdventurer()->damage + potion->amount);
             setLastPotionDamage(potion->amount);
             setStrengthPotionTime(3);
