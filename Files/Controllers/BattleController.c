@@ -45,28 +45,11 @@ char getAndCheckBattleInput() {
     }
 }
 
-static void printCross(WINDOW *infoWin) {
-    int x = INFO_X / 2;
-    int y = INFO_Y - 3;
-
-    for (int i = 0; i < INFO_Y; i++) {
-        mvwaddch(infoWin, i, x, ACS_VLINE);
-    }
-    for (int j = 0; j < INFO_X; j++) {
-        mvwaddch(infoWin, y, j, ACS_HLINE);
-    }
-    mvwaddch(infoWin, y, x, ACS_PLUS);
-    mvwaddch(infoWin, 0, x, ACS_TTEE);
-    mvwaddch(infoWin, INFO_Y-1, x, ACS_BTEE);
-    mvwaddch(infoWin, y, 0, ACS_LTEE);
-    mvwaddch(infoWin, y, INFO_X-1, ACS_RTEE);
-}
-
 void printBattle() {
     WINDOW *win = newwin(OPTIONS_Y+INFO_X, INFO_X, 0, 0);
     WINDOW *infoWin = derwin(win, INFO_Y, INFO_X, 0, 0);
     box(infoWin, 0, 0);
-    printCross(infoWin);
+    printCross(infoWin, INFO_Y - 3, INFO_X / 2);
     for (int i = 0; i < 9; i++) {
         mvwprintw(infoWin, 1 + i, 1, "%s", getASCII(getAdventurer()->profession, i));
     }
