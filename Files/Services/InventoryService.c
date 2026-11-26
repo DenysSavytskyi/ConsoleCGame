@@ -92,7 +92,11 @@ void sellItem(int index) {
     if (index < 0 || index > INVENTORY_SIZE - 1) {
         return;
     }
-    getAdventurer()->money += getItemPrice(getItem(index));
+    ItemAndType* item = getItem(index);
+    if (item == NULL || item->type == ITEM_NULL || item->type == QUEST_ITEM) {
+        return;
+    }
+    getAdventurer()->money += getItemPrice(item);
     deleteItem(index);
 }
 

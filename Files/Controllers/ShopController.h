@@ -4,7 +4,6 @@
 #include "Controller.h"
 #include "InventoryController.h"
 #include "../Modules/ItemGenerator.h"
-#include "../Services/ShopService.h"
 #pragma once
 
 #define SHOP_PAD 5
