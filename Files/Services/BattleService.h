@@ -4,7 +4,6 @@
 #pragma once
 
 State battleService();
-State battle();
 int checkPossibleMovesBattle(char *possibleInputs);
 
 #endif

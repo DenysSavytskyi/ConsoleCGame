@@ -17,14 +17,6 @@ void setDefencePotionTime(int time) {
     defencePotionTime = time;
 }
 
-int getStrengthPotionTime() {
-    return strengthPotionTime;
-}
-
-int getDefencePotionTime() {
-    return defencePotionTime;
-}
-
 void checkStrengthPotionTime() {
     if (strengthPotionTime > 0) {
         strengthPotionTime--;
@@ -35,7 +27,7 @@ void checkStrengthPotionTime() {
     }
 }
 
-int checkDefencePotionTime() {
+static int checkDefencePotionTime() {
     if (defencePotionTime > 0) {
         defencePotionTime--;
         return defencePotionDefence;
@@ -73,10 +65,6 @@ void setDamage(int damage) {
 
 void setMoney(int money) {
     adventurer->money = money;
-}
-
-void setLevel(int level) {
-    adventurer->level = level;
 }
 
 void setXp(int xp) {
@@ -122,7 +110,7 @@ int getAbilityCount() {
     return adventurer->abilityCount;
 }
 
-void addAbility(const Ability *ability) {
+static void addAbility(const Ability *ability) {
     adventurer->abilityCount++;
     adventurer->abilities = realloc(adventurer->abilities, sizeof(Ability) * adventurer->abilityCount);
     adventurer->abilities[adventurer->abilityCount - 1] = *ability;
@@ -165,7 +153,7 @@ Adventurer* getAdventurer() {
     return adventurer;
 }
 
-Adventurer* newAdventurer(char *name, Profession profession, Ability ability, int hpMax, int damage, int money, int xp, int x, int y) {
+static Adventurer* newAdventurer(char *name, Profession profession, Ability ability, int hpMax, int damage, int money, int xp, int x, int y) {
     adventurer = malloc(sizeof(*adventurer));
 
     strncpy(adventurer->name, name, sizeof(adventurer->name) - 1);

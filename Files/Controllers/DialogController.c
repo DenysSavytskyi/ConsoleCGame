@@ -2,7 +2,7 @@
 
 static int currentLine = 0;
 
-void printTyped(const char *text, int lineOfText, int startX) {
+static void printTyped(const char *text, int lineOfText, int startX) {
     for (int i = 0; text[i] != '\0'; i++) {
         if (text[i] == '\n') {
             lineOfText++;
@@ -23,8 +23,7 @@ static int getFrameWidth(int terminalWidth) {
 }
 
 static WINDOW *createFrame(bool left, int numberOfLines, int *textY, int *textX) {
-    int rows, cols;
-    getmaxyx(stdscr, rows, cols);
+    int cols = getmaxx(stdscr);
     int width = getFrameWidth(cols);
     int height = numberOfLines + 2;
     int x = left ? 1 : cols - width - 2;
@@ -43,30 +42,9 @@ static WINDOW *createFrame(bool left, int numberOfLines, int *textY, int *textX)
     return frame;
 }
 
-void drawEmptyLeftFrame(int numberOfLines) {
-    int textY, textX;
-    WINDOW *frame = createFrame(true, numberOfLines, &textY, &textX);
-    delwin(frame);
-}
-
-void drawEmptyRightFrame(int numberOfLines) {
-    int textY, textX;
-    WINDOW *frame = createFrame(false, numberOfLines, &textY, &textX);
-    delwin(frame);
-}
-
 void printLeft(const char *text, int numberOfLines) {
     int textY, textX;
     WINDOW *frame = createFrame(true, numberOfLines, &textY, &textX);
-    setCursor(textX, textY + 1);
-    printTyped(text, textY + 1, textX);
-    delwin(frame);
-    sleep_ms(PHRASES_DELAY_MS);
-}
-
-void printRight(const char *text, int numberOfLines) {
-    int textY, textX;
-    WINDOW *frame = createFrame(false, numberOfLines, &textY, &textX);
     setCursor(textX, textY + 1);
     printTyped(text, textY + 1, textX);
     delwin(frame);

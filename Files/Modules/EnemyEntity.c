@@ -50,10 +50,6 @@ void generateEnemy(int roomIndex, bool isBoss) {
     enemiesCount++;
 }
 
-int getEnemiesCount() {
-    return enemiesCount;
-}
-
 int getEnemyDamage(int roomIndex) {
     if (enemies == NULL) {
         return 0;

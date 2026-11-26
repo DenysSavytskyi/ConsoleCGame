@@ -23,7 +23,7 @@ int getCurrentIndex() {
     return currentIndex;
 }
 
-void printAdventurerAndStats() {
+static void printAdventurerAndStats() {
     WINDOW* infoWin = newwin(INFO_Y, INFO_X, 0, 0);
     box(infoWin, 0, 0);
     printVerticalLine(infoWin, CHARACTER_X);
@@ -42,7 +42,7 @@ void printAdventurerAndStats() {
     wrefresh(infoWin);
 }
 
-void printItemStats(WINDOW* derWin, ItemAndType* itemAndType) {
+static void printItemStats(WINDOW* derWin, ItemAndType* itemAndType) {
     char* itemType = "Empty";
     char* potionType = "NONE";
     switch (itemAndType->type) {
@@ -121,7 +121,7 @@ void printInventory(WINDOW* win, int itemBoxY, int itemBoxX, int inventorySize, 
     wrefresh(win);
 }
 
-void printInventoryService() {
+static void printInventoryService() {
     WINDOW* inventoryWin = newwin(ITEM_BOX_Y*(INVENTORY_SIZE/ITEMS_IN_ROW), ITEM_BOX_X * ITEMS_IN_ROW, INFO_Y, 0);
     printAdventurerAndStats();
     printInventory(inventoryWin, ITEM_BOX_Y, ITEM_BOX_X, INVENTORY_SIZE, currentIndex);
@@ -134,17 +134,9 @@ char getAndCheckInventoryInput() {
         char possibleInputs[8]; // [w][a][s][d] to navigate inventory, [x] to quit, [e] to equip/use, [q] to drop and terminator
         int inputCount = checkPossibleInputInventory(possibleInputs);
         possibleInputs[inputCount] = '\0';
-        mvprintw(ITEM_BOX_Y * (INVENTORY_SIZE/ITEMS_IN_ROW) + INFO_Y + 1, 0, "Possible input:\n");
-        for (int i = 0; i < inputCount; i++) {
-            printw(" %c", possibleInputs[i]);
-        }
-        printw("\nEnter your move:\n");
-        refresh();
-
-        char input = (char)getch();
-        while (input == ERR) {
-            input = (char)getch();
-        }
+        printInputOptions(ITEM_BOX_Y * (INVENTORY_SIZE/ITEMS_IN_ROW) + INFO_Y + 1,
+                          "Possible input:\n", possibleInputs, inputCount);
+        char input = getInputChar();
         if (checkInput(possibleInputs, input)) {
             return input;
         }

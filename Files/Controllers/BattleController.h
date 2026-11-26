@@ -14,7 +14,6 @@ typedef enum BattleState {
 BattleState getBattleState();
 void setBattleState(BattleState newState);
 char getAndCheckBattleInput();
-void printBattle();
 
 
 #endif

@@ -13,6 +13,8 @@
 
 static BattleState battleState = OPTIONS;
 
+static void printBattle();
+
 BattleState getBattleState() {
     return battleState;
 }
@@ -28,24 +30,15 @@ char getAndCheckBattleInput() {
         char possibleInputs[11];
         int inputCount = checkPossibleMovesBattle(possibleInputs);
         possibleInputs[inputCount] = '\0';
-        mvprintw(OPTIONS_Y + INFO_Y + 1, 0, "Possible moves:\n");
-        for (int i = 0; i < inputCount; i++) {
-            printw(" %c", possibleInputs[i]);
-        }
-        printw("\nEnter your move:\n");
-        refresh();
-
-        char input = (char)getch();
-        while (input == ERR) {
-            input = (char)getch();
-        }
+        printInputOptions(OPTIONS_Y + INFO_Y + 1, "Possible moves:\n", possibleInputs, inputCount);
+        char input = getInputChar();
         if (checkInput(possibleInputs, input)) {
             return input;
         }
     }
 }
 
-void printBattle() {
+static void printBattle() {
     WINDOW *win = newwin(OPTIONS_Y+INFO_X, INFO_X, 0, 0);
     WINDOW *infoWin = derwin(win, INFO_Y, INFO_X, 0, 0);
     box(infoWin, 0, 0);

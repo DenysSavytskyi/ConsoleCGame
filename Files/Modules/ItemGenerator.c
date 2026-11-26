@@ -62,12 +62,6 @@ ItemAndType generateRandomItem() {
     return itemAndType;
 }
 
-ItemAndType generateQuestItem() {
-    ItemAndType itemAndType;
-    itemAndType.type = QUEST_ITEM;
-    return itemAndType;
-}
-
 int getItemPrice(ItemAndType* itemAndType) {
     switch (itemAndType->type) {
         case POTION:

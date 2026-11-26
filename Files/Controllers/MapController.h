@@ -5,9 +5,6 @@
 #include "Controller.h"
 #pragma once
 
-void printMap();
-void printRoom();
-void printMinimap();
 char getAndCheckMapInput();
 
 #endif //JAC_MAPCONTROLLER_H
