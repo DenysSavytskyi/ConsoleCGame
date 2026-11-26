@@ -391,11 +391,9 @@ static State mapMove() {
                     }
                     return MAP_STATE;
                 case Shop:
-                    shopService();
-                    return SHOP_STATE;
+                    return shopService();
                 case NPC:
-                    dialogService();
-                    return DIALOG_STATE;
+                    return dialogService();
                 case Portal:
                     if (getLevel()==5) {
                         setEndState(VICTORY);

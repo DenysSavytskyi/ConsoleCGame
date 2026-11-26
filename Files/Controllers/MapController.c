@@ -97,7 +97,6 @@ char getAndCheckMapInput() {
     while (1) {
         clearConsole();
         printMap();
-
         char possibleInputs[7]; //[w][a][s][d] [e] to interact, [i], and terminator
         int inputCount = checkPossibleMovesMap(possibleInputs);
         possibleInputs[inputCount] = '\0';

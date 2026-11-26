@@ -20,8 +20,9 @@ int getShopIndex() {
 
 static void printShopItemBox(WINDOW* derWin, ItemAndType* itemAndType, bool isSelected, const char* action) {
     int y = getmaxy(derWin);
-    printItemBoxForInventory(derWin, itemAndType, isSelected);
+    printItemBoxForInventory(derWin, itemAndType, isSelected, true);
     printOnlyHorizontalLine(derWin, y - 3);
+    wrefresh(derWin);
     mvwprintw(derWin, y - 2, 1, " %s: %d", action, getItemPrice(itemAndType));
 }
 
@@ -29,7 +30,7 @@ static void printInventoryForShop(WINDOW* win, int itemBoxY, int itemBoxX, int i
     int selectedIndex = getShopIndex() >= SHOP_SIZE
         ? getShopIndex() - SHOP_SIZE
         : -1;
-    printInventory(win, itemBoxY, itemBoxX, inventorySize, selectedIndex);
+    printInventory(win, itemBoxY, itemBoxX, inventorySize, selectedIndex, true);
 
     for (int i = 0; i < inventorySize; i++) {
         int y = (i / ITEMS_IN_ROW) * itemBoxY;

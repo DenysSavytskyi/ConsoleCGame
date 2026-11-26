@@ -10,8 +10,11 @@
 
 void setCurrentIndex(int index);
 int getCurrentIndex();
-void printItemBoxForInventory(WINDOW* derWin, ItemAndType* itemAndType, bool isSelected);
-void printInventory(WINDOW* win, int itemBoxY, int itemBoxX, int inventorySize, int currentIndex);
+void printAdventurerAndStats();
+void printItemStats(WINDOW* derWin, ItemAndType* itemAndType);
+void printItemBoxForInventory(WINDOW* derWin, ItemAndType* itemAndType, bool isSelected, bool additionalLine);
+void printInventory(WINDOW* win, int itemBoxY, int itemBoxX, int inventorySize, int currentIndex, bool additionalLine);
+void printInventoryService();
 char getAndCheckInventoryInput();
 
 #endif
