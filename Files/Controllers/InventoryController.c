@@ -96,7 +96,8 @@ void printItemStats(WINDOW* derWin, ItemAndType* itemAndType) {
     mvwprintw(derWin, 1, 1, " %s", itemType);
 }
 
-void printItemBoxForInventory(WINDOW* derWin, ItemAndType* itemAndType, bool isSelected) {
+void printItemBoxForInventory(WINDOW* derWin, ItemAndType* itemAndType, bool isSelected, bool additionalLine) {
+    int y = getmaxy(derWin);
     if (isSelected) {
         wattron(derWin, COLOR_PAIR(6));
         box(derWin, 0, 0);
@@ -104,17 +105,21 @@ void printItemBoxForInventory(WINDOW* derWin, ItemAndType* itemAndType, bool isS
     } else {
         box(derWin, 0, 0);
         printLeftAndRightTees(derWin, 2);
+        if (additionalLine)
+            printLeftAndRightTees(derWin, y - 3);
     }
+    if (additionalLine)
+        printOnlyHorizontalLine(derWin, y - 3);
     printOnlyHorizontalLine(derWin, 2);
     printItemStats(derWin, itemAndType);
 }
 
-void printInventory(WINDOW* win, int itemBoxY, int itemBoxX, int inventorySize, int selectedIndex) {
+void printInventory(WINDOW* win, int itemBoxY, int itemBoxX, int inventorySize, int selectedIndex, bool additionalLine) {
     for (int i = 0; i < inventorySize; i++) {
         int y = (i / ITEMS_IN_ROW) * itemBoxY;
         int x = (i % ITEMS_IN_ROW) * itemBoxX;
         WINDOW* derWin = derwin(win, itemBoxY, itemBoxX, y, x);
-        printItemBoxForInventory(derWin, getItem(i), i == selectedIndex);
+        printItemBoxForInventory(derWin, getItem(i), i == selectedIndex, additionalLine);
         wrefresh(derWin);
         delwin(derWin);
     }
@@ -124,7 +129,7 @@ void printInventory(WINDOW* win, int itemBoxY, int itemBoxX, int inventorySize, 
 void printInventoryService() {
     WINDOW* inventoryWin = newwin(ITEM_BOX_Y*(INVENTORY_SIZE/ITEMS_IN_ROW), ITEM_BOX_X * ITEMS_IN_ROW, INFO_Y, 0);
     printAdventurerAndStats();
-    printInventory(inventoryWin, ITEM_BOX_Y, ITEM_BOX_X, INVENTORY_SIZE, currentIndex);
+    printInventory(inventoryWin, ITEM_BOX_Y, ITEM_BOX_X, INVENTORY_SIZE, currentIndex, false);
 }
 
 char getAndCheckInventoryInput() {
