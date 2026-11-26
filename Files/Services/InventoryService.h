@@ -2,6 +2,7 @@
 #define INVENTORY_SERVICE_H
 #include "../Modules/State.h"
 #include "../Modules/ItemTypes.h"
+#include "../Modules/ItemGenerator.h"
 #pragma once
 
 #define INVENTORY_SIZE 10
@@ -11,9 +12,10 @@ typedef struct Inventory {
 } Inventory;
 
 State inventoryService();
-int checkPossibleMovesInventory(char *possibleInputs);
+int checkPossibleInputInventory(char *possibleInputs);
 void newInventory();
 int addItem(ItemAndType itemAndType); /* returns 1 if ok and 0 if no space */
+void sellItem(int index);
 void dropItem(int index);
 int getTotalDefense();
 int getWeaponDamage();

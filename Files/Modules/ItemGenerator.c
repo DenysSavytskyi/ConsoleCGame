@@ -67,3 +67,16 @@ ItemAndType generateQuestItem() {
     itemAndType.type = QUEST_ITEM;
     return itemAndType;
 }
+
+int getItemPrice(ItemAndType* itemAndType) {
+    switch (itemAndType->type) {
+        case POTION:
+            return itemAndType->item.potion.amount * 1;
+        case WEAPON:
+            return itemAndType->item.weapon.damage * 3;
+        case ARMOR:
+            return itemAndType->item.armor.defense * 2;
+        default:
+            return 0;
+    }
+}

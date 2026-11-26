@@ -14,32 +14,33 @@ static int cursorY = 1;
 static int maxCursorY = 1;
 
 void initializeController() {
+    sleep_ms(1000);
     initscr();
     cbreak();
     noecho();
     curs_set(0);
     keypad(stdscr, FALSE);
 
-    int rows, cols;
-    getmaxyx(stdscr, rows, cols);
-    if (rows < MIN_TERMINAL_ROWS || cols < MIN_TERMINAL_COLS) {
-        clear();
-        mvprintw(0, 0, "Terminal is too small. Press F11 to maximize within 3 seconds.");
-        refresh();
-        sleep_ms(3000);
-        resize_term(0, 0);
-        getmaxyx(stdscr, rows, cols);
-        if (rows < MIN_TERMINAL_ROWS || cols < MIN_TERMINAL_COLS) {
-            clear();
-            mvprintw(0, 0, "The window was not enlarged in time. Please restart and press F11.");
-            mvprintw(1, 0, "Required minimum: %d rows x %d columns.", MIN_TERMINAL_ROWS, MIN_TERMINAL_COLS);
-            mvprintw(2, 0, "Press any key to exit.");
-            refresh();
-            getch();
-            endwin();
-            exit(EXIT_FAILURE);
-        }
-    }
+    // int rows, cols;
+    // getmaxyx(stdscr, rows, cols);
+    // if (rows < MIN_TERMINAL_ROWS || cols < MIN_TERMINAL_COLS) {
+    //     clear();
+    //     mvprintw(0, 0, "Terminal is too small. Press F11 to maximize within 3 seconds.");
+    //     refresh();
+    //     sleep_ms(3000);
+    //     resize_term(0, 0);
+    //     getmaxyx(stdscr, rows, cols);
+    //     if (rows < MIN_TERMINAL_ROWS || cols < MIN_TERMINAL_COLS) {
+    //         clear();
+    //         mvprintw(0, 0, "The window was not enlarged in time. Please restart and press F11.");
+    //         mvprintw(1, 0, "Required minimum: %d rows x %d columns.", MIN_TERMINAL_ROWS, MIN_TERMINAL_COLS);
+    //         mvprintw(2, 0, "Press any key to exit.");
+    //         refresh();
+    //         getch();
+    //         endwin();
+    //         exit(EXIT_FAILURE);
+    //     }
+    // }
 
     if (has_colors()) {
         start_color();

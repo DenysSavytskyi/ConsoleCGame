@@ -4,7 +4,8 @@
 #define CHARACTER_X 13
 #define INFO_X 34
 #define ITEM_BOX_Y 6
-#define ITEM_BOX_X 19
+#define ITEM_BOX_X 20
+
 
 static int currentIndex = 0;
 
@@ -41,79 +42,89 @@ void printAdventurerAndStats() {
     wrefresh(infoWin);
 }
 
-void printInventory() {
-    WINDOW* inventoryWin = newwin(ITEM_BOX_Y*(INVENTORY_SIZE/5), ITEM_BOX_X*(INVENTORY_SIZE%5), INFO_Y, 0);
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
-        WINDOW* derWin = derwin(inventoryWin, ITEM_BOX_Y, ITEM_BOX_X, (i/5)*ITEM_BOX_Y, (i%5)*ITEM_BOX_X);
-        if (i == getCurrentIndex()) {
-            wattron(derWin, COLOR_PAIR(6));
-            box(derWin, 0, 0);
-            wattroff(derWin, COLOR_PAIR(6));
-        } else {
-            box(derWin, 0, 0);
-            printLeftAndRightTees(derWin, 2);
-        }
-        printOnlyHorizontalLine(derWin, 2);
-        ItemAndType* itemAndType = getItem(i);
-        char* itemType = "Empty";
-        char* potionType = "NONE";
-        switch (itemAndType->type){
-            case POTION:
-                itemType = "Potion";
-                switch (itemAndType->item.potion.type) {
-                    case HEALTH:
-                        potionType = "Health";
-                        break;
-                    case STRENGTH:
-                        potionType = "Strength";
-                        break;
-                    case DEFENSE:
-                        potionType = "Defense";
-                        break;
-                    case EXPERIENCE:
-                        potionType = "Experience";
-                        break;
-                }
-                mvwprintw(derWin, 3, 1, " Type: %s", potionType);
-                mvwprintw(derWin, 4, 1, " Gives: %d", itemAndType->item.potion.amount);
-                break;
-            case WEAPON:
-                itemType = "Weapon";
-                mvwprintw(derWin, 3, 1, " Damage: %d", itemAndType->item.weapon.damage);
-                break;
-            case ARMOR:
-                switch (itemAndType->item.armor.part) {
-                    case HELMET:
-                        itemType = "Helmet";
-                        break;
-                    case CHESTPLATE:
-                        itemType = "Chestplate";
-                        break;
-                    case LEGGINGS:
-                        itemType = "Leggings";
-                        break;
-                    case BOOTS:
-                        itemType = "Boots";
-                        break;
-                }
-                mvwprintw(derWin, 3, 1, " Defense: %d", itemAndType->item.armor.defense);
-                break;
-            case QUEST_ITEM:
-                itemType = "Quest Item";
-                break;
-            case ITEM_NULL:
-                itemType = "Empty";
-                break;
-        }
-        mvwprintw(derWin, 1, 1, " %s", itemType);
-        wrefresh(derWin);
+void printItemStats(WINDOW* derWin, ItemAndType* itemAndType) {
+    char* itemType = "Empty";
+    char* potionType = "NONE";
+    switch (itemAndType->type) {
+        case POTION:
+            itemType = "Potion";
+            switch (itemAndType->item.potion.type) {
+                case HEALTH:
+                    potionType = "Health";
+                    break;
+                case STRENGTH:
+                    potionType = "Strength";
+                    break;
+                case DEFENSE:
+                    potionType = "Defense";
+                    break;
+                case EXPERIENCE:
+                    potionType = "Experience";
+                    break;
+            }
+            mvwprintw(derWin, 3, 1, " Type: %s", potionType);
+            mvwprintw(derWin, 4, 1, " Gives: %d", itemAndType->item.potion.amount);
+            break;
+        case WEAPON:
+            itemType = "Weapon";
+            mvwprintw(derWin, 3, 1, " Damage: %d", itemAndType->item.weapon.damage);
+            break;
+        case ARMOR:
+            switch (itemAndType->item.armor.part) {
+                case HELMET:
+                    itemType = "Helmet";
+                    break;
+                case CHESTPLATE:
+                    itemType = "Chestplate";
+                    break;
+                case LEGGINGS:
+                    itemType = "Leggings";
+                    break;
+                case BOOTS:
+                    itemType = "Boots";
+                    break;
+            }
+            mvwprintw(derWin, 3, 1, " Defense: %d", itemAndType->item.armor.defense);
+            break;
+        case QUEST_ITEM:
+            itemType = "Quest Item";
+            break;
+        case ITEM_NULL:
+            itemType = "Empty";
+            break;
     }
-    wrefresh(inventoryWin);
+    mvwprintw(derWin, 1, 1, " %s", itemType);
+}
+
+void printItemBoxForInventory(WINDOW* derWin, ItemAndType* itemAndType, bool isSelected) {
+    if (isSelected) {
+        wattron(derWin, COLOR_PAIR(6));
+        box(derWin, 0, 0);
+        wattroff(derWin, COLOR_PAIR(6));
+    } else {
+        box(derWin, 0, 0);
+        printLeftAndRightTees(derWin, 2);
+    }
+    printOnlyHorizontalLine(derWin, 2);
+    printItemStats(derWin, itemAndType);
+}
+
+void printInventory(WINDOW* win, int itemBoxY, int itemBoxX, int inventorySize, int selectedIndex) {
+    for (int i = 0; i < inventorySize; i++) {
+        int y = (i / ITEMS_IN_ROW) * itemBoxY;
+        int x = (i % ITEMS_IN_ROW) * itemBoxX;
+        WINDOW* derWin = derwin(win, itemBoxY, itemBoxX, y, x);
+        printItemBoxForInventory(derWin, getItem(i), i == selectedIndex);
+        wrefresh(derWin);
+        delwin(derWin);
+    }
+    wrefresh(win);
 }
 
 void printInventoryService() {
+    WINDOW* inventoryWin = newwin(ITEM_BOX_Y*(INVENTORY_SIZE/ITEMS_IN_ROW), ITEM_BOX_X * ITEMS_IN_ROW, INFO_Y, 0);
     printAdventurerAndStats();
-    printInventory();
+    printInventory(inventoryWin, ITEM_BOX_Y, ITEM_BOX_X, INVENTORY_SIZE, currentIndex);
 }
 
 char getAndCheckInventoryInput() {
@@ -121,9 +132,9 @@ char getAndCheckInventoryInput() {
         clearConsole();
         printInventoryService();
         char possibleInputs[8]; // [w][a][s][d] to navigate inventory, [x] to quit, [e] to equip/use, [q] to drop and terminator
-        int inputCount = checkPossibleMovesInventory(possibleInputs);
+        int inputCount = checkPossibleInputInventory(possibleInputs);
         possibleInputs[inputCount] = '\0';
-        mvprintw(ITEM_BOX_Y * (INVENTORY_SIZE/5) + INFO_Y + 1, 0, "Possible moves:\n");
+        mvprintw(ITEM_BOX_Y * (INVENTORY_SIZE/ITEMS_IN_ROW) + INFO_Y + 1, 0, "Possible input:\n");
         for (int i = 0; i < inputCount; i++) {
             printw(" %c", possibleInputs[i]);
         }

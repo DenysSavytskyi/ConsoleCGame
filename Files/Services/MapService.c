@@ -213,7 +213,7 @@ void generateMap(int roomIndex, RoomType roomType, int roomSize) {
     if (roomType == TreasureRoom) {
         addTreasureOnMap(roomIndex, y, x);
     } else if (roomType == ShopRoom) {
-        //TODO generateShop(roomIndex, y, x);
+        newShop();
     } else if (roomType == NPCRoom) {
         //TODO generateNPC(roomIndex, y, x);
     }

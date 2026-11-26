@@ -40,7 +40,7 @@ State inventoryService() {
     return getPreviousState();
 }
 
-int checkPossibleMovesInventory(char *possibleInputs) {
+int checkPossibleInputInventory(char *possibleInputs) {
     int count = 0;
     if (getCurrentIndex()>=5) {
         possibleInputs[count++] = 'w';
@@ -86,6 +86,14 @@ int addItem(ItemAndType itemAndType) {
         }
     }
     return 0;
+}
+
+void sellItem(int index) {
+    if (index < 0 || index > INVENTORY_SIZE - 1) {
+        return;
+    }
+    getAdventurer()->money += getItemPrice(getItem(index));
+    deleteItem(index);
 }
 
 void dropItem(int index) {

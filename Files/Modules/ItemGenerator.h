@@ -7,4 +7,6 @@
 ItemAndType generateTreasure(); //returns ItemAndType with Type ITEM_NULL if returns money and ItemAndType if returns item
 ItemAndType generateRandomItem();
 ItemAndType generateQuestItem();
+int getItemPrice(ItemAndType* itemAndType);
+
 #endif //GAME_ITEMGENERATOR_H
