@@ -9,11 +9,17 @@ void newShop() {
 }
 
 ItemAndType* getShopItem(int itemIndex) {
+    if (itemIndex < 0 || itemIndex >= SHOP_SIZE) {
+        return NULL;
+    }
     return &market.items[itemIndex];
 }
 
 void buyItem(int itemIndex) {
     ItemAndType* shopItem = getShopItem(itemIndex);
+    if (shopItem == NULL || shopItem->type == ITEM_NULL || shopItem->type == QUEST_ITEM) {
+        return;
+    }
     int price = getItemPrice(shopItem);
     if (getAdventurer()->money >= price) {
         if (addItem(*shopItem)) {
@@ -42,8 +48,10 @@ State shopService() {
             case 'e':
                 if (getShopIndex() < SHOP_SIZE) {
                     buyItem(getShopIndex());
-                } else
-                    sellItem(getCurrentIndex()-5);
+                } else {
+                    sellItem(getShopIndex() - SHOP_SIZE);
+                }
+                break;
             default:
                 break;
         }
@@ -59,7 +67,9 @@ char getAndCheckShopInput() {
         char possibleInputs[7]; // [w][a][s][d] to navigate inventory and shop, [x] to quit, [e] to sell/buy and terminator
         int inputCount = checkPossibleInputShop(possibleInputs);
         possibleInputs[inputCount] = '\0';
-        mvprintw(SHOP_ITEM_BOX_Y * (INVENTORY_SIZE/ITEMS_IN_ROW + SHOP_SIZE/ITEMS_IN_ROW) + SHOP_PAD + 1, 0, "Possible input:\n");
+        int shopRows = (SHOP_SIZE + ITEMS_IN_ROW - 1) / ITEMS_IN_ROW;
+        int inventoryRows = (INVENTORY_SIZE + ITEMS_IN_ROW - 1) / ITEMS_IN_ROW;
+        mvprintw(SHOP_ITEM_BOX_Y * (shopRows + inventoryRows) + SHOP_PAD + 1, 0, "Possible input:\n");
         for (int i = 0; i < inputCount; i++) {
             printw(" %c", possibleInputs[i]);
         }
@@ -78,20 +88,24 @@ char getAndCheckShopInput() {
 
 int checkPossibleInputShop(char *possibleInputs) {
     int count = 0;
-    if (getShopIndex()>=10) {
+    int index = getShopIndex();
+    int totalItems = SHOP_SIZE + INVENTORY_SIZE;
+    if (index >= ITEMS_IN_ROW) {
         possibleInputs[count++] = 'w';
     }
-    if (getShopIndex()%5!=0) {
+    if (index % ITEMS_IN_ROW != 0) {
         possibleInputs[count++] = 'a';
     }
-    if (getShopIndex()<5) {
+    if (index + ITEMS_IN_ROW < totalItems) {
         possibleInputs[count++] = 's';
     }
-    if (getShopIndex()%5!=4) {
+    if (index % ITEMS_IN_ROW != ITEMS_IN_ROW - 1) {
         possibleInputs[count++] = 'd';
     }
-    ItemAndType* item = getShopIndex()<5?getShopItem(getShopIndex()):getItem(getCurrentIndex());
-    if (item->type != ITEM_NULL && item->type != QUEST_ITEM) {
+    ItemAndType* item = index < SHOP_SIZE
+        ? getShopItem(index)
+        : getItem(index - SHOP_SIZE);
+    if (item != NULL && item->type != ITEM_NULL && item->type != QUEST_ITEM) {
         possibleInputs[count++] = 'e';
     }
     possibleInputs[count++] = 'x';
