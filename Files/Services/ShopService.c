@@ -2,6 +2,9 @@
 
 static Market market;
 
+static char getAndCheckShopInput();
+static int checkPossibleInputShop(char *possibleInputs);
+
 void newShop() {
     for (int i = 0; i < SHOP_SIZE; i++) {
         market.items[i] = generateRandomItem();
@@ -15,7 +18,7 @@ ItemAndType* getShopItem(int itemIndex) {
     return &market.items[itemIndex];
 }
 
-void buyItem(int itemIndex) {
+static void buyItem(int itemIndex) {
     ItemAndType* shopItem = getShopItem(itemIndex);
     if (shopItem == NULL || shopItem->type == ITEM_NULL || shopItem->type == QUEST_ITEM) {
         return;
@@ -60,7 +63,7 @@ State shopService() {
     return MAP_STATE;
 }
 
-char getAndCheckShopInput() {
+static char getAndCheckShopInput() {
     while (1) {
         clearConsole();
         printShop();
@@ -69,24 +72,16 @@ char getAndCheckShopInput() {
         possibleInputs[inputCount] = '\0';
         int shopRows = (SHOP_SIZE + ITEMS_IN_ROW - 1) / ITEMS_IN_ROW;
         int inventoryRows = (INVENTORY_SIZE + ITEMS_IN_ROW - 1) / ITEMS_IN_ROW;
-        mvprintw(SHOP_ITEM_BOX_Y * (shopRows + inventoryRows) + SHOP_PAD + 1, 0, "Possible input:\n");
-        for (int i = 0; i < inputCount; i++) {
-            printw(" %c", possibleInputs[i]);
-        }
-        printw("\nEnter your move:\n");
-        refresh();
-
-        char input = (char)getch();
-        while (input == ERR) {
-            input = (char)getch();
-        }
+        printInputOptions(SHOP_ITEM_BOX_Y * (shopRows + inventoryRows) + SHOP_PAD + 1,
+                          "Possible input:\n", possibleInputs, inputCount);
+        char input = getInputChar();
         if (checkInput(possibleInputs, input)) {
             return input;
         }
     }
 }
 
-int checkPossibleInputShop(char *possibleInputs) {
+static int checkPossibleInputShop(char *possibleInputs) {
     int count = 0;
     int index = getShopIndex();
     int totalItems = SHOP_SIZE + INVENTORY_SIZE;

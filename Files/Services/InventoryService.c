@@ -9,6 +9,10 @@ static Armor chestplate;
 static Armor leggings;
 static Armor boots;
 
+static void dropItem(int index);
+static void deleteItem(int index);
+static void usePotion(int index);
+
 State inventoryService() {
     char input = getAndCheckInventoryInput();
     while (input != 'x') {
@@ -100,7 +104,7 @@ void sellItem(int index) {
     deleteItem(index);
 }
 
-void dropItem(int index) {
+static void dropItem(int index) {
     if (index < 0 || index > INVENTORY_SIZE - 1) {
         return;
     }
@@ -109,6 +113,19 @@ void dropItem(int index) {
     }
     addItemOnMap(inventory->items[index], getMap()->currentRoom, getAdventurer()->y, getAdventurer()->x);
     inventory->items[index].type = ITEM_NULL;
+}
+
+static void equipArmor(Armor *equipped, ItemAndType *item, int index) {
+    if (equipped->defense > 0) {
+        ItemAndType oldItem;
+        oldItem.type = ARMOR;
+        oldItem.item.armor = *equipped;
+        *equipped = item->item.armor;
+        *item = oldItem;
+    } else {
+        *equipped = item->item.armor;
+        deleteItem(index);
+    }
 }
 
 int getTotalDefense() {
@@ -121,13 +138,13 @@ int getWeaponDamage() {
 
 void equip(int index) {
     ItemAndType* itemAndType = getItem(index);
-    ItemAndType tempItem;
     if (itemAndType->type == WEAPON) {
         if (weapon.damage > 0) {
-            tempItem.type = WEAPON;
-            tempItem.item.weapon = weapon;
+            ItemAndType oldItem;
+            oldItem.type = WEAPON;
+            oldItem.item.weapon = weapon;
             weapon = itemAndType->item.weapon;
-            *itemAndType = tempItem;
+            *itemAndType = oldItem;
         } else {
             weapon = itemAndType->item.weapon;
             deleteItem(index);
@@ -135,48 +152,16 @@ void equip(int index) {
     } else if (itemAndType->type == ARMOR) {
         switch (itemAndType->item.armor.part) {
             case HELMET:
-                if (helmet.defense > 0) {
-                    tempItem.type = ARMOR;
-                    tempItem.item.armor = helmet;
-                    helmet = itemAndType->item.armor;
-                    *itemAndType = tempItem;
-                } else {
-                    helmet = itemAndType->item.armor;
-                    deleteItem(index);
-                }
+                equipArmor(&helmet, itemAndType, index);
                 break;
             case CHESTPLATE:
-                if (chestplate.defense > 0) {
-                    tempItem.type = ARMOR;
-                    tempItem.item.armor = chestplate;
-                    chestplate = itemAndType->item.armor;
-                    *itemAndType = tempItem;
-                } else {
-                    chestplate = itemAndType->item.armor;
-                    deleteItem(index);
-                }
+                equipArmor(&chestplate, itemAndType, index);
                 break;
             case LEGGINGS:
-                if (leggings.defense > 0) {
-                    tempItem.type = ARMOR;
-                    tempItem.item.armor = leggings;
-                    leggings = itemAndType->item.armor;
-                    *itemAndType = tempItem;
-                } else {
-                    leggings = itemAndType->item.armor;
-                    deleteItem(index);
-                }
+                equipArmor(&leggings, itemAndType, index);
                 break;
             case BOOTS:
-                if (boots.defense > 0) {
-                    tempItem.type = ARMOR;
-                    tempItem.item.armor = boots;
-                    boots = itemAndType->item.armor;
-                    *itemAndType = tempItem;
-                } else {
-                    boots = itemAndType->item.armor;
-                    deleteItem(index);
-                }
+                equipArmor(&boots, itemAndType, index);
                 break;
         }
     }
@@ -189,31 +174,21 @@ ItemAndType* getItem(int index) {
     return &inventory->items[index];
 }
 
-void deleteItem(int index) {
+static void deleteItem(int index) {
     if (index < 0 || index > INVENTORY_SIZE - 1) {
         return;
     }
     inventory->items[index].type = ITEM_NULL;
 }
 
-int getItemCount(ItemType type) {
-    int count = 0;
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
-        if (getItem(i)->type == type) {
-            count++;
-        }
-    }
-    return count;
-}
-
-Potion* getPotion(int index) {
+static Potion* getPotion(int index) {
     ItemAndType *itemAndType = getItem(index);
     return itemAndType != NULL && itemAndType->type == POTION
         ? &itemAndType->item.potion
         : NULL;
 }
 
-void usePotion(int index) {
+static void usePotion(int index) {
     Potion* potion = getPotion(index);
     if (potion == NULL) {
         return;

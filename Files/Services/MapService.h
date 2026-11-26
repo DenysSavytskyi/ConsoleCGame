@@ -63,30 +63,13 @@ typedef struct Map {
 
 int getLevel();
 Cell getCurrentRoomCell(int row, int column);
-void setCurrentRoomCell(int row, int column, Cell cell);
-Cell getRoomCell(int roomIndex, int row, int column);
-void setRoomCell(int roomIndex, int row, int column, Cell cell);
 int addItemOnMap(ItemAndType item, int roomIndex, int row, int column); //returns 1 if ok and 0 if no space
-ItemAndType deleteItemFromMap (int roomIndex, int row, int column);
-void addTreasureOnMap(int roomIndex, int row, int column);
-void initRooms(int roomsCount);
-void initRoom(int roomIndex, RoomType type);
-void initMap();
-void setDoors(int firstRoom, int secondRoom);
-void connectRooms(int roomsCount);
-void nextRoom();
 State mapService();
 Map* getMap();
 RoomType* getMinimap();
-Cell** getRoomMap(int roomIndex);
-Cell** getCurrentRoomMap();
-void generateMap(int RoomIndex, RoomType type, int roomSize);
-Room* getRoom(int roomIndex);
 Room* getCurrentRoom();
 bool areRoomsConnected(int firstRoom, int secondRoom);
-State mapMove();
 int checkPossibleMovesMap(char *possibleInputs);
 void removeEnemyFromMap(bool isBoss);
-void completeMap();
 
 #endif //JAC_MAP_H

@@ -36,7 +36,9 @@ static int colorForRoom(RoomType roomType) {
     }
 }
 
-void printRoom() {
+static void printMinimap();
+
+static void printRoom() {
     int roomSize = getCurrentRoom()->roomSize;
 
     WINDOW *roomWindow = newwin(roomSize, roomSize, 0, 0);
@@ -59,12 +61,12 @@ void printRoom() {
     delwin(roomWindow);
 }
 
-void printMap() {
+static void printMap() {
     printRoom();
     printMinimap();
 }
 
-void printMinimap() {
+static void printMinimap() {
     int roomSize = getCurrentRoom()->roomSize;
     int startX = roomSize + 4;
     WINDOW *minimapWindow = newwin(7, 9, 0, startX);
@@ -99,17 +101,8 @@ char getAndCheckMapInput() {
         int inputCount = checkPossibleMovesMap(possibleInputs);
         possibleInputs[inputCount] = '\0';
         int statusY = getCurrentRoom()->roomSize + 3;
-        mvprintw(statusY, 0, "Possible moves:");
-        for (int i = 0; i < inputCount; i++) {
-            printw(" %c", possibleInputs[i]);
-        }
-        printw("\nEnter your move:\n");
-        refresh();
-
-        char input = (char)getch();
-        while (input == ERR) {
-            input = (char)getch();
-        }
+        printInputOptions(statusY, "Possible moves:", possibleInputs, inputCount);
+        char input = getInputChar();
         if (checkInput(possibleInputs, input)) {
             return input;
         }

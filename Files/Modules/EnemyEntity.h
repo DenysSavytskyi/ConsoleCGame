@@ -26,7 +26,6 @@ typedef struct EnemyEntity {
 } EnemyEntity;
 
 void generateEnemy(int roomIndex, bool isBoss);
-int getEnemiesCount();
 int getEnemyDamage(int roomIndex);
 int attackEnemy(int roomIndex, int damage);
 int getEnemyHp(int roomIndex);

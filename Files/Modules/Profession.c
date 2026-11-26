@@ -1,6 +1,6 @@
 #include "Profession.h"
 
-char *fighter[] = {
+static char *fighter[] = {
     "   /##\\     ",
     "  | ## |    ",
     " /|{==}|\\   ",
@@ -12,7 +12,7 @@ char *fighter[] = {
     " /_/  \\_\\   "
 };
 
-char *mage[] = {
+static char *mage[] = {
     "     /\\     ",
     "    /  \\    ",
     "   /    \\   ",
@@ -24,7 +24,7 @@ char *mage[] = {
     "  /______\\  "
 };
 
-char *thief[] = {
+static char *thief[] = {
     "   /----\\   ",
     "  /  %%  \\  ",
     "  | (..) |  ",
@@ -36,7 +36,7 @@ char *thief[] = {
     "  /______\\  "
 };
 
-char *bard[] = {
+static char *bard[] = {
     "    /\\/\\    ",
     "   ( . .)   ",
     "   /\\--/\\   ",
@@ -48,7 +48,7 @@ char *bard[] = {
     "  /_/  \\_\\  "
 };
 
-char *cleric[] = {
+static char *cleric[] = {
     "    +--+    ",
     "   /+--+\\   ",
     "   | v v|   ",

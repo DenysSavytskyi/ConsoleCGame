@@ -6,6 +6,8 @@
 #include "../Controllers/BattleController.h"
 #include "InventoryService.h"
 
+static State battle();
+
 State battleService() {
     while (getAdventurer()->hp > 0) {
         State state = battle();
@@ -25,7 +27,7 @@ static int calculateDamage() {
     return totalDamage;
 }
 
-State battle() {
+static State battle() {
     char option = getAndCheckBattleInput();
     if (getBattleState() == OPTIONS) {
         switch (option) {

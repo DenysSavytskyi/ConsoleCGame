@@ -15,6 +15,17 @@ static int treasuresCount = 0;
 static ItemAndTypeOnMap *items = NULL;
 static int itemsCount = 0;
 
+static Cell getRoomCell(int roomIndex, int row, int column);
+static void setRoomCell(int roomIndex, int row, int column, Cell cell);
+static void initRooms(int roomsCount);
+static void initRoom(int roomIndex, RoomType type);
+static void generateMap(int roomIndex, RoomType roomType, int roomSize);
+static void setDoors(int firstRoom, int secondRoom);
+static void connectRooms(int roomsCount);
+static Room *getRoom(int roomIndex);
+static State mapMove();
+static void completeMap();
+
 static bool isInteractable(Cell cell) {
     return cell == Stuff ||
            cell == Treasure ||
@@ -55,7 +66,7 @@ int getLevel() {
     return level;
 }
 
-void initMap() {
+static void initMap() {
     map = malloc(sizeof(Map));
     map->roomsCount = getRandom(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT);
     map->currentRoom = 0;
@@ -68,15 +79,15 @@ Cell getCurrentRoomCell(int row, int column) {
     return getRoomCell(map->currentRoom, row, column);
 }
 
-void setCurrentRoomCell(int row, int column, Cell cell) {
+static void setCurrentRoomCell(int row, int column, Cell cell) {
     setRoomCell(map->currentRoom, row, column, cell);
 }
 
-Cell getRoomCell(int roomIndex, int row, int column) {
+static Cell getRoomCell(int roomIndex, int row, int column) {
     return map->rooms[roomIndex].roomMap[row][column];
 }
 
-void setRoomCell(int roomIndex, int row, int column, Cell cell) {
+static void setRoomCell(int roomIndex, int row, int column, Cell cell) {
     map->rooms[roomIndex].roomMap[row][column] = cell;
 }
 
@@ -95,7 +106,7 @@ int addItemOnMap(ItemAndType item, int roomIndex, int row, int column) {
     return 1;
 }
 
-ItemAndType deleteItemFromMap (int roomIndex, int row, int column) {
+static ItemAndType deleteItemFromMap (int roomIndex, int row, int column) {
     ItemAndTypeOnMap itemOnMap;
     itemOnMap.itemAndType.type = ITEM_NULL;
     for (int i = 0; i < itemsCount; i++) {
@@ -113,7 +124,7 @@ ItemAndType deleteItemFromMap (int roomIndex, int row, int column) {
     return itemOnMap.itemAndType;
 }
 
-void addTreasureOnMap(int roomIndex, int row, int column) {
+static void addTreasureOnMap(int roomIndex, int row, int column) {
     Reward treasure;
     treasure.roomIndex = roomIndex;
     treasure.y = row;
@@ -123,7 +134,7 @@ void addTreasureOnMap(int roomIndex, int row, int column) {
     setRoomCell(roomIndex, row, column, Treasure);
 }
 
-void initRooms(int roomsCount) {
+static void initRooms(int roomsCount) {
     RoomType possibleTypes[] = {TreasureRoom, EnemyRoom, EnemyRoom, EnemyRoom, EnemyRoom, ShopRoom, NPCRoom};
     initRoom(0, StartRoom);
     initRoom(roomsCount-1, BossRoom);
@@ -143,13 +154,13 @@ void initRooms(int roomsCount) {
     connectRooms(roomsCount);
 }
 
-void initRoom(int roomIndex, RoomType type) {
+static void initRoom(int roomIndex, RoomType type) {
     map->rooms[roomIndex].type = type;
     map->rooms[roomIndex].roomSize = getRandom(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
     generateMap(roomIndex, type, map->rooms[roomIndex].roomSize);
 }
 
-void generateMap(int roomIndex, RoomType roomType, int roomSize) {
+static void generateMap(int roomIndex, RoomType roomType, int roomSize) {
     Cell element = Empty;
     switch (roomType) {
         case StartRoom:
@@ -219,7 +230,7 @@ void generateMap(int roomIndex, RoomType roomType, int roomSize) {
     }
 }
 
-void setDoors(int firstRoom, int secondRoom) {
+static void setDoors(int firstRoom, int secondRoom) {
     if (firstRoom < 0 || secondRoom < 0 ||
         firstRoom >= map->roomsCount || secondRoom >= map->roomsCount) {
         return;
@@ -245,7 +256,7 @@ void setDoors(int firstRoom, int secondRoom) {
     map->connections[secondRoom * map->roomsCount + firstRoom] = true;
 }
 
-void connectRooms(int roomsCount) {
+static void connectRooms(int roomsCount) {
     RoomType *graph = malloc(roomsCount * sizeof(RoomType));
     bool *isVisited = malloc(roomsCount * sizeof(bool));
     for (int i = 0; i < roomsCount; i++) {
@@ -286,7 +297,7 @@ void connectRooms(int roomsCount) {
     free(isVisited);
 }
 
-void nextRoom() {
+static void nextRoom() {
     if (getAdventurer()->x == 1 && getAdventurer()->y == getCurrentRoom()->roomSize / 2) {
         map->currentRoom -= 1;
         getAdventurer()->y = getCurrentRoom()->roomSize / 2;
@@ -306,7 +317,7 @@ void nextRoom() {
     }
 }
 
-Room* getRoom(int roomIndex) {
+static Room* getRoom(int roomIndex) {
     if (roomIndex < 0 || roomIndex >= map->roomsCount) {
         return NULL;
     }
@@ -333,18 +344,6 @@ RoomType* getMinimap() {
     return minimap;
 }
 
-Cell** getRoomMap(int roomIndex) {
-    Room *room = getRoom(roomIndex);
-    if (room == NULL) {
-        return NULL;
-    }
-    return room->roomMap;
-}
-
-Cell** getCurrentRoomMap() {
-    return getRoomMap(map->currentRoom);
-}
-
 State mapService() {
     State state = MAP_STATE;
     if (!getMap()) {
@@ -356,7 +355,7 @@ State mapService() {
     return state;
 }
 
-State mapMove() {
+static State mapMove() {
     char input = getAndCheckMapInput();
     switch (input) {
         case 'w':
@@ -454,7 +453,7 @@ void removeEnemyFromMap(bool isBoss) {
         addTreasureOnMap(getMap()->currentRoom, getAdventurer()->y, getAdventurer()->x);
 }
 
-void completeMap() {
+static void completeMap() {
     level++;
     freeEnemies();
     freeMap();

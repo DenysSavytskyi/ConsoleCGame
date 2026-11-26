@@ -28,27 +28,21 @@ typedef struct Adventurer {
 
 void setStrengthPotionTime(int time);
 void setDefencePotionTime(int time);
-int getStrengthPotionTime();
-int getDefencePotionTime();
 void checkStrengthPotionTime();
-int checkDefencePotionTime();
 void setLastPotionDamage(int damage);
 int getLastPotionDamage();
 void setLastPotionDefence(int defence);
 void setHp(int hp);
 void setDamage(int damage);
 void setMoney(int money);
-void setLevel(int level);
 void setXp(int xp);
 void setX(int x);
 void setY(int y);
 void attackAdventurer();
 int getAbilityCount();
-void addAbility(const Ability *ability);
 int useAbility(int index);
 void getRewards(int enemyMaxHp);
 
-Adventurer* newAdventurer(char *name, Profession profession, Ability ability, int hpMax, int damage, int money, int xp, int x, int y);
 Adventurer* getAdventurer();
 Adventurer* createAdventurer();
 

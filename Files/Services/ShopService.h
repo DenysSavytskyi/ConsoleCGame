@@ -15,7 +15,5 @@ typedef struct Market {
 void newShop();
 ItemAndType* getShopItem(int itemIndex);
 State shopService();
-char getAndCheckShopInput();
-int checkPossibleInputShop(char *possibleInputs);
 
 #endif
