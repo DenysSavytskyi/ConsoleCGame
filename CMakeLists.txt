@@ -21,6 +21,8 @@ add_executable(Game
         Files/Modules/Profession.h
         Files/Modules/State.h
         Files/Modules/ItemTypes.h
+        Files/Modules/Quests.c
+        Files/Modules/Quests.h
         Files/Modules/Ability.c
         Files/Modules/Ability.h
         Files/Modules/Adventurer.c

@@ -1,10 +1,14 @@
 #include "DialogService.h"
 #include "../Modules/Adventurer.h"
+#include "../Modules/Quests.h"
+#include "../Controllers/DialogController.h"
 
 State dialogService() {
     if (!getAdventurer()) {
         createAdventurer();
         return MAP_STATE;
     }
-    return END_STATE;
+    resetDialog();
+    interactWithNPC();
+    return MAP_STATE;
 }

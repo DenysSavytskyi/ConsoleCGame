@@ -40,6 +40,8 @@ void setX(int x);
 void setY(int y);
 void attackAdventurer();
 int getAbilityCount();
+int hasAbility(Ability ability);
+int addAbility(Ability ability);
 int useAbility(int index);
 void getRewards(int enemyMaxHp);
 

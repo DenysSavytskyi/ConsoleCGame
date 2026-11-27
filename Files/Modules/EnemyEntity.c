@@ -126,6 +126,16 @@ int getEnemyMaxHp(int roomIndex) {
     return 0;
 }
 
+int getNonBossEnemyCount(void) {
+    int count = 0;
+    for (int i = 0; i < enemiesCount; i++) {
+        if (!enemies[i].isBoss) {
+            count++;
+        }
+    }
+    return count;
+}
+
 void freeEnemies() {
     free(enemies);
     enemies = NULL;

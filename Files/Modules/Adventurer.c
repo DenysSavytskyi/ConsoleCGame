@@ -110,10 +110,30 @@ int getAbilityCount() {
     return adventurer->abilityCount;
 }
 
-static void addAbility(const Ability *ability) {
-    adventurer->abilityCount++;
-    adventurer->abilities = realloc(adventurer->abilities, sizeof(Ability) * adventurer->abilityCount);
-    adventurer->abilities[adventurer->abilityCount - 1] = *ability;
+int hasAbility(Ability ability) {
+    if (adventurer == NULL) {
+        return 0;
+    }
+    for (int i = 0; i < adventurer->abilityCount; i++) {
+        if (adventurer->abilities[i] == ability) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int addAbility(Ability ability) {
+    if (adventurer == NULL || hasAbility(ability)) {
+        return 0;
+    }
+    Ability *abilities = realloc(adventurer->abilities,
+        sizeof(*abilities) * (size_t)(adventurer->abilityCount + 1));
+    if (abilities == NULL) {
+        return 0;
+    }
+    adventurer->abilities = abilities;
+    adventurer->abilities[adventurer->abilityCount++] = ability;
+    return 1;
 }
 
 // returns 0 if the ability was used successfully, -1 if error occurred or >0 if its damage
@@ -162,7 +182,7 @@ static Adventurer* newAdventurer(char *name, Profession profession, Ability abil
     newInventory();
     adventurer->abilities = NULL;
     adventurer->abilityCount = 0;
-    addAbility(&ability);
+    addAbility(ability);
     adventurer->hpMax = hpMax;
     adventurer->hp = hpMax;
     adventurer->damage = damage;
