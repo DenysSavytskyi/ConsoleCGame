@@ -9,6 +9,7 @@
 #define CHARS_DELAY_MS 10
 
 void printLeft(const char *text, int numberOfLines);
+void printRight(const char *text, int numberOfLines);
 void printRightInput(const char *text, char *buffer, int buffer_size, int numberOfLines);
 void resetDialog();
 

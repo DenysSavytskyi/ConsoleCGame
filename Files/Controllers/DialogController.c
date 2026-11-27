@@ -51,6 +51,15 @@ void printLeft(const char *text, int numberOfLines) {
     sleep_ms(PHRASES_DELAY_MS);
 }
 
+void printRight(const char *text, int numberOfLines) {
+    int textY, textX;
+    WINDOW *frame = createFrame(false, numberOfLines, &textY, &textX);
+    setCursor(textX, textY + 1);
+    printTyped(text, textY + 1, textX);
+    delwin(frame);
+    sleep_ms(PHRASES_DELAY_MS);
+}
+
 void printRightInput(const char *text, char *buffer, int buffer_size, int numberOfLines) {
     int textY, textX;
     WINDOW *frame = createFrame(false, numberOfLines + 1, &textY, &textX);

@@ -30,6 +30,7 @@ int getEnemyDamage(int roomIndex);
 int attackEnemy(int roomIndex, int damage);
 int getEnemyHp(int roomIndex);
 int getEnemyMaxHp(int roomIndex);
+int getNonBossEnemyCount(void);
 void freeEnemies();
 
 #endif //JAC_ENEMY_H

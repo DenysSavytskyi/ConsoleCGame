@@ -6,6 +6,7 @@
 #include "InventoryService.h"
 #include "ShopService.h"
 #include "DialogService.h"
+#include "../Modules/Quests.h"
 #include "../Controllers/EndController.h"
 static int level = 0;
 static Map *map = NULL;
@@ -106,6 +107,24 @@ int addItemOnMap(ItemAndType item, int roomIndex, int row, int column) {
     return 1;
 }
 
+int spawnQuestItem(ItemAndType item) {
+    if (map == NULL) {
+        return 0;
+    }
+    while (1) {
+        int roomIndex = getRandom(0, map->roomsCount - 1);
+        int roomSize = map->rooms[roomIndex].roomSize;
+        int row = getRandom(1, roomSize - 2);
+        int column = getRandom(1, roomSize - 2);
+        if (roomIndex == 0 && row == getAdventurer()->y && column == getAdventurer()->x) {
+            continue;
+        }
+        if (getRoomCell(roomIndex, row, column) == Empty) {
+            return addItemOnMap(item, roomIndex, row, column);
+        }
+    }
+}
+
 static ItemAndType deleteItemFromMap (int roomIndex, int row, int column) {
     ItemAndTypeOnMap itemOnMap;
     itemOnMap.itemAndType.type = ITEM_NULL;
@@ -152,6 +171,7 @@ static void initRooms(int roomsCount) {
         possibleTypes[rand] = NullRoom;
     }
     connectRooms(roomsCount);
+    spawnPendingQuestItem();
 }
 
 static void initRoom(int roomIndex, RoomType type) {
@@ -226,7 +246,7 @@ static void generateMap(int roomIndex, RoomType roomType, int roomSize) {
     } else if (roomType == ShopRoom) {
         newShop();
     } else if (roomType == NPCRoom) {
-        //TODO generateNPC(roomIndex, y, x);
+        generateNPC();
     }
 }
 
@@ -458,5 +478,6 @@ static void completeMap() {
     freeEnemies();
     freeMap();
     freeMinimap();
+    resetNPCQuest();
     initMap();
 }

@@ -64,6 +64,7 @@ typedef struct Map {
 int getLevel();
 Cell getCurrentRoomCell(int row, int column);
 int addItemOnMap(ItemAndType item, int roomIndex, int row, int column); //returns 1 if ok and 0 if no space
+int spawnQuestItem(ItemAndType item);
 State mapService();
 Map* getMap();
 RoomType* getMinimap();
